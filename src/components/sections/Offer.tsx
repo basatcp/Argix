@@ -2,11 +2,13 @@ import { FRAMEWORKS, PILLARS, SERVICES, type CoreLayer, type Pillar } from '../.
 import { Icon } from '../Icons';
 import { MiniCore } from '../MiniCore';
 import { SectionHeading } from '../ui';
+import { SectionBackground } from '../backgrounds/SectionBackground';
 
 /* SECTION 2: Trust framework strip */
 export function FrameworkStrip() {
   return (
-    <section aria-labelledby="frameworks-title" className="relative border-b border-line bg-ink-900 py-10 md:py-12">
+    <section aria-labelledby="frameworks-title" className="relative isolate border-b border-line bg-ink-900 py-10 md:py-12">
+      <SectionBackground variant="strip" />
       <div className="container-site flex flex-col items-center gap-6 lg:flex-row lg:gap-10">
         <h2 id="frameworks-title" className="shrink-0 text-[13px] font-semibold uppercase tracking-[0.16em] text-muted">
           Frameworks We Build and Test For
@@ -16,7 +18,7 @@ export function FrameworkStrip() {
             <li
               key={f}
               data-reveal
-              className="rounded-lg border border-line px-3.5 py-2 text-[13.5px] font-medium tracking-wide text-[#C9D3E0] transition-colors hover:border-electric/40 hover:text-text"
+              className="rounded-lg border border-line px-3.5 py-2 text-[13.5px] font-medium tracking-wide text-[#C9D3E0] transition-[border-color,color,box-shadow] duration-300 hover:border-electric/45 hover:text-text hover:shadow-[0_0_16px_-6px_rgba(59,130,246,0.55)]"
             >
               {f}
             </li>
@@ -36,7 +38,8 @@ const PILLAR_LAYERS: Record<Pillar['key'], { lit: CoreLayer[]; focus: CoreLayer 
 
 export function BuildRunSecure() {
   return (
-    <section id="pillars" aria-labelledby="pillars-title" className="section-pad relative">
+    <section id="pillars" aria-labelledby="pillars-title" className="section-pad relative isolate">
+      <SectionBackground variant="pillars" />
       <div className="container-site">
         <SectionHeading
           id="pillars-title"
@@ -45,12 +48,13 @@ export function BuildRunSecure() {
           lead="Software, cloud and security from one team, so the people who build your system also understand how it can fail."
         />
 
-        <div className="relative mt-14 grid gap-5 md:mt-16 lg:grid-cols-3">
+        <div data-bg-anchor="pillars" className="relative mt-14 grid gap-5 md:mt-16 lg:grid-cols-3">
           {PILLARS.map((p, i) => (
             <article
               key={p.key}
               data-reveal
               aria-labelledby={`pillar-${p.key}`}
+              data-bg-anchor={p.key === 'secure' ? 'secure' : undefined}
               className="card group relative flex flex-col overflow-hidden p-7 transition-colors duration-300 hover:border-electric/40 md:p-8"
             >
               <div className="flex items-start justify-between">
@@ -85,7 +89,8 @@ export function BuildRunSecure() {
 /* SECTION 4: Selected service cards */
 export function ServiceCards() {
   return (
-    <section id="services" aria-labelledby="services-title" className="section-pad relative bg-ink-900">
+    <section id="services" aria-labelledby="services-title" className="section-pad relative isolate bg-ink-900">
+      <SectionBackground variant="network" blend="both" />
       <div aria-hidden="true" className="glow-divider absolute inset-x-0 top-0 opacity-50" />
       <div className="container-site">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">

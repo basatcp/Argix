@@ -4,6 +4,7 @@ import { prefersReducedMotion } from '../hooks/useReducedMotion';
 import { CyberCoreCanvas } from './CyberCoreCanvas';
 import { Icon } from './Icons';
 import { useConsultation } from './consultation/ConsultationModal';
+import { SectionBackground } from './backgrounds/SectionBackground';
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -27,6 +28,7 @@ export function Hero() {
       {/* Background */}
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_70%_40%,#0A1E38_0%,#07111F_45%,#050B14_100%)]" />
       <div aria-hidden="true" className="grid-bg absolute inset-0 -z-10 opacity-70" />
+      <SectionBackground variant="hero" />
       <div aria-hidden="true" className="glow-divider absolute inset-x-0 bottom-0" />
 
       <div className="container-site grid items-center gap-10 md:grid-cols-2 md:gap-6 lg:grid-cols-[45%_55%] lg:gap-0">
@@ -61,7 +63,7 @@ export function Hero() {
           </p>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[560px] md:max-w-none lg:-mr-6">
+        <div data-bg-anchor="core" className="relative mx-auto w-full max-w-[560px] md:max-w-none lg:-mr-6">
           <CyberCoreCanvas />
         </div>
       </div>

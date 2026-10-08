@@ -1,0 +1,272 @@
+/*
+ * Background motion system. Everything here animates only opacity, transform
+ * or SVG dash offsets; nothing animates blur, filters or layout.
+ */
+
+.sbg {
+  contain: strict;
+}
+
+/* The hero environment fades in once the core is up. */
+.sbg--after-core > * {
+  animation: bg-fade-in 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes bg-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Off-screen backgrounds stop all their animations. */
+.sbg[data-active='false'] *,
+.card-motif[data-active='false'] * {
+  animation-play-state: paused !important;
+}
+
+/* Parallax layers are taller than the section so shifting never shows an edge. */
+.bg-parallax {
+  position: absolute;
+  inset: -40px 0;
+  transform: translate3d(0, calc(var(--bg-shift, 0px) * var(--depth, 0)), 0);
+}
+.bg-parallax-only {
+  transform: translate3d(0, calc(var(--bg-shift, 0px) * var(--depth, 0)), 0);
+}
+
+/* Glows that follow the pointer a few px; the transition does the easing. */
+.bg-follow {
+  transform: translate3d(var(--bg-px, 0px), var(--bg-py, 0px), 0);
+  transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* First entry: layers fade in, traces draw in. */
+.sbg .bg-reveal {
+  opacity: 0;
+  transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+.sbg[data-entered='true'] .bg-reveal {
+  opacity: 1;
+}
+.sbg .bg-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.8s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+.sbg[data-entered='true'] .bg-draw {
+  stroke-dashoffset: 0;
+}
+
+/* Pulses: one dash moving linearly along its path, then resting. */
+.bg-pulse {
+  animation-name: bg-pulse;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  stroke-dashoffset: var(--from);
+}
+@keyframes bg-pulse {
+  from {
+    stroke-dashoffset: var(--from);
+  }
+  to {
+    stroke-dashoffset: var(--to);
+  }
+}
+
+.bg-twinkle {
+  animation: bg-twinkle 7s ease-in-out infinite;
+  opacity: var(--lo);
+}
+@keyframes bg-twinkle {
+  0%,
+  100% {
+    opacity: var(--lo);
+  }
+  50% {
+    opacity: var(--hi);
+  }
+}
+
+.bg-drift {
+  animation: bg-drift 16s ease-in-out infinite;
+}
+@keyframes bg-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(var(--dx, 0px), var(--dy, 0px));
+  }
+}
+
+.bg-blink {
+  animation: bg-blink 10s linear infinite;
+  opacity: 0;
+}
+@keyframes bg-blink {
+  0%,
+  86%,
+  100% {
+    opacity: 0;
+  }
+  89% {
+    opacity: 0.9;
+  }
+  94% {
+    opacity: 0;
+  }
+}
+
+.bg-breathe {
+  animation: bg-breathe 10s ease-in-out infinite;
+}
+@keyframes bg-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.bg-glow-drift {
+  animation: bg-glow-drift 36s ease-in-out infinite;
+}
+@keyframes bg-glow-drift {
+  0%,
+  100% {
+    transform: translateX(-9%);
+  }
+  50% {
+    transform: translateX(9%);
+  }
+}
+
+.bg-spin {
+  animation: bg-spin 22s linear infinite;
+}
+@keyframes bg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bg-ring-pulse {
+  animation: bg-ring-pulse 6.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  opacity: 0;
+}
+@keyframes bg-ring-pulse {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.55;
+  }
+  55% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* Slow expanding rings (closing section). */
+.bg-expand {
+  animation: bg-expand 12s linear infinite;
+  opacity: 0;
+}
+@keyframes bg-expand {
+  0% {
+    transform: scale(0.35);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+.bg-sweep {
+  --skew: -18deg;
+  animation: bg-sweep 13s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes bg-sweep {
+  0% {
+    transform: translateX(-140%) skewX(var(--skew));
+  }
+  28%,
+  100% {
+    transform: translateX(380%) skewX(var(--skew));
+  }
+}
+
+/* A horizontal data line with a pulse crossing it now and then (framework strip). */
+.bg-dataline-pulse {
+  animation: bg-dataline 9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  transform: translateX(-30vw);
+}
+@keyframes bg-dataline {
+  0% {
+    transform: translateX(-30vw);
+  }
+  45%,
+  100% {
+    transform: translateX(130vw);
+  }
+}
+
+/* Process: taps into each step light up as the scroll progress passes them. */
+.bg-tap-line {
+  stroke: rgba(59, 130, 246, 0.14);
+  transition: stroke 500ms ease;
+}
+.bg-tap-node {
+  fill: rgba(14, 27, 44, 1);
+  stroke: rgba(59, 130, 246, 0.3);
+  stroke-width: 1;
+  transition: fill 500ms ease, stroke 500ms ease;
+}
+.bg-tap[data-lit='1'] .bg-tap-line {
+  stroke: rgba(56, 189, 248, 0.45);
+}
+.bg-tap[data-lit='1'] .bg-tap-node {
+  fill: rgb(56, 189, 248);
+  stroke: rgba(186, 230, 253, 0.8);
+}
+
+/* Industry card motifs: quiet by default, a little more present on hover. */
+.card-motif {
+  opacity: 0.55;
+  transition: opacity 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .card-motif,
+.group:focus-within .card-motif {
+  opacity: 0.95;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-parallax,
+  .bg-parallax-only,
+  .bg-follow {
+    transform: none !important;
+  }
+  .sbg--after-core > * {
+    animation: none !important;
+  }
+  /* Static backgrounds appear at once: no staggered fade-ins either. */
+  .sbg *,
+  .sbg > *,
+  .card-motif * {
+    transition-delay: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

@@ -80,11 +80,40 @@ With no endpoint configured, the form says that online booking isn't connected y
   - Focus is trapped inside the dialog. It closes with the close button, a click outside, or Escape, and focus returns to the button that opened it.
   - An unsent draft survives an accidental close.
 - **Analytics** (optional, nothing to configure): `consultation_modal_open`, `consultation_modal_close`, `consultation_form_start`, `consultation_form_submit`, `consultation_form_success` and `consultation_form_error`, with `location`, `source`, `service` and `reason` where they apply. Each goes to GTM's `dataLayer`, `gtag` and Plausible when present, and is always dispatched as a `consultation:analytics` DOM event.
-- **Background**:
-  - Two 2D canvases: a static hex grid and traces, plus pulses, nodes and particles at ~30 fps. It pauses off-screen and in hidden tabs.
+- **Background**: the shared background system's `consult` variant (see [Background motion system](#background-motion-system)).
+  - Routes converge on the form card, with pulses, inward-drifting nodes, slow expanding rings and a few particles. It pauses off-screen and in hidden tabs.
   - Tablets and phones get fewer traces and particles.
   - The cursor-reactive glow (max 16 px) is limited to desktop with a mouse.
   - With reduced motion it is static.
+
+## Background motion system
+
+All section backgrounds come from one system in `src/components/backgrounds/`. Each section renders `<SectionBackground variant="…" />` as a direct child (the section has `relative isolate`); the background sits behind the content, never takes pointer events, and clips its own layers.
+
+| Section | Variant | Intensity | Elements |
+| --- | --- | --- | --- |
+| Hero | `hero` | High | circuit routes converging on the core, data pulses, nodes, breathing glow (pointer), particles, parallax. Mounts after the core's first frame |
+| Frameworks strip | `strip` | Low | faint grid, data line with an occasional pulse |
+| Build / Run / Secure | `pillars` | Medium | modular grid, left-to-right data flows with module nodes feeding into security rings (scan arc, pulse) |
+| Services | `network` | Medium | hex grid, routed traces drawing in, nodes, pulses, glow (pointer) |
+| Metrics | `metrics` | Low | drifting glow that rises on entry, a few rising particles; underline under each number |
+| Industries | `industries` + `CardMotif` | Low-medium | quiet section glow; each card has its own motif (network, modular grid, transaction path, expanding network, secured connection), more visible on hover |
+| Process | `process` | Medium-high | blueprint grid and construction diagram (parallax), a circuit bus whose lit length and step taps follow scroll progress |
+| Security operations | `monitor` | Medium | node network with rare event blips, scanning rings, centre glow |
+| Secure coding | `split` | Medium | data flows on the build side converge with rings and shield geometry on the secure side; a pulse hands off every few seconds |
+| Certifications | `blueprint` | Very low | blueprint grid, sparse diagonals, light sweep every ~13 s |
+| FAQ | `minimal` | Minimal | oversized hexagon outlines, very slow glow drift |
+| Consultation | `consult` | Medium | hex grid, routes converging on the form, nodes drifting inward, pulses, slow expanding rings, glow (pointer), particles |
+| Footer | `footer` | Almost static | faint hex pattern, glow, 3 slow particles |
+
+Primitives: `TechnicalGrid`, `HexGrid`, `CircuitLines`, `DataPulse`, `NetworkNodes`, `SecurityRings`, `RadialGlow`, `LightSweep`, `AmbientParticles`. Geometry is generated per section size from a seed (`geometry.ts`), so lines stay 1 px crisp and each section always looks the same.
+
+Performance:
+- **Shared infrastructure** (`motion.ts`): one IntersectionObserver, one animation-frame loop that runs only while a visible layer needs it, and one scroll and pointer listener.
+- **Animation methods:** grids are CSS gradients or a tiled SVG; pulses are animated SVG dash offsets; glows, rings and sweeps animate only transform and opacity. The only canvas is the particle layer (≤ 30 particles desktop, ≤ 15 tablet, ≤ 8 mobile, at ~30 fps).
+- **Off-screen:** backgrounds get `data-active="false"`, which pauses every CSS animation in them, and their canvas stops drawing.
+- **Device tiers:** phones get fewer traces and pulses, no parallax, no pointer effects and almost no particles; tablets get reduced parallax.
+- **Reduced motion:** static grids and lines only. There are no pulses, particles, parallax, pointer effects or looping animations.
 
 ## Cyber Core metaphor
 

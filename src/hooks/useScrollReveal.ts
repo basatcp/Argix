@@ -6,10 +6,18 @@ import { prefersReducedMotion } from './useReducedMotion';
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Fade-up reveal for every element marked with `data-reveal`.
- * Siblings entering together are staggered. Initial state is set from JS so
- * content stays visible if scripts fail; skipped entirely for reduced motion.
+ * One shared reveal for every element marked with `data-reveal`: a fade with a
+ * short rise that depends on what the element is (headings 24px, body copy
+ * 14px, cards and groups 20px), 650 ms, ease-out-quint (= cubic-bezier(0.22, 1,
+ * 0.36, 1)), 80 ms stagger. Initial state is set from JS so content stays
+ * visible if scripts fail; skipped entirely for reduced motion.
  */
+const EASE = 'power4.out'; // quint out, i.e. cubic-bezier(0.22, 1, 0.36, 1)
+const rise = (el: Element) => {
+  if (/^H[1-6]$/.test(el.tagName) || el.classList.contains('h-section')) return 24;
+  if (el.tagName === 'P') return 14;
+  return 20;
+};
 export function useScrollReveal() {
   useLayoutEffect(() => {
     if (prefersReducedMotion()) return;
@@ -25,7 +33,7 @@ export function useScrollReveal() {
       const onScreen = fresh.filter((el) => !above.includes(el));
       if (above.length) gsap.set(above, { opacity: 1, y: 0, overwrite: true });
       if (onScreen.length) {
-        gsap.to(onScreen, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: Math.min(0.08, 0.5 / onScreen.length), overwrite: true });
+        gsap.to(onScreen, { opacity: 1, y: 0, duration: 0.65, ease: EASE, stagger: Math.min(0.08, 0.5 / onScreen.length), overwrite: true });
       }
     };
     /** Safety net after a re-measure: reveal anything at or above the reveal line that was missed. */
@@ -37,7 +45,7 @@ export function useScrollReveal() {
     const ctx = gsap.context(() => {
       items = gsap.utils.toArray<HTMLElement>('[data-reveal]');
       // Opacity only (not visibility) so keyboard focus can still reach content before it is revealed.
-      gsap.set(items, { opacity: 0, y: 24 });
+      gsap.set(items, { opacity: 0, y: (_: number, el: Element) => rise(el) });
       ScrollTrigger.batch(items, {
         start: 'top 88%',
         once: true,

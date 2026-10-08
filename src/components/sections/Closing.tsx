@@ -3,6 +3,7 @@ import { BRAND, FAQS, FOOTER_COLUMNS } from '../../data/site';
 import { Icon } from '../Icons';
 import { Logo } from '../Logo';
 import { SectionHeading } from '../ui';
+import { SectionBackground } from '../backgrounds/SectionBackground';
 
 /* SECTION 11: FAQ (accessible accordion) */
 function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean; onToggle: () => void }) {
@@ -38,7 +39,13 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
         className={`grid transition-[grid-template-rows,visibility] duration-300 ease-out ${open ? 'visible grid-rows-[1fr]' : 'invisible grid-rows-[0fr]'}`}
       >
         <div className="overflow-hidden">
-          <p className="max-w-[680px] pb-6 pr-12 text-[15.5px] leading-relaxed text-muted">{a}</p>
+          <p
+            className={`max-w-[680px] pb-6 pr-12 text-[15.5px] leading-relaxed text-muted transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              open ? 'translate-y-0 opacity-100 delay-75' : '-translate-y-1 opacity-0'
+            }`}
+          >
+            {a}
+          </p>
         </div>
       </div>
     </li>
@@ -48,7 +55,8 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section id="faq" aria-labelledby="faq-title" className="section-pad relative">
+    <section id="faq" aria-labelledby="faq-title" className="section-pad relative isolate">
+      <SectionBackground variant="minimal" />
       <div className="container-site grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div>
           <SectionHeading id="faq-title" align="left" eyebrow="FAQ" title="Questions We Hear Before Every Project" />
@@ -72,7 +80,8 @@ export function Faq() {
 /* Footer */
 export function Footer() {
   return (
-    <footer className="relative border-t border-line bg-ink-900" aria-labelledby="footer-title">
+    <footer className="relative isolate border-t border-line bg-ink-900" aria-labelledby="footer-title">
+      <SectionBackground variant="footer" blend="top" />
       <h2 id="footer-title" className="sr-only">
         Site footer
       </h2>

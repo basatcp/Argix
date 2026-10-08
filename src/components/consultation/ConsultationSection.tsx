@@ -16,15 +16,13 @@ const TRUST: { title: string; text: string; icon: IconName }[] = [
 /** Homepage consultation section (anchor #contact): editorial trust column + the full form. */
 export function ConsultationSection() {
   return (
-    <section id="contact" aria-labelledby="consult-title" className="section-pad relative isolate overflow-hidden bg-ink-950">
+    <section id="contact" aria-labelledby="consult-title" className="section-pad relative isolate bg-ink-950">
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_68%_50%,#0B1A30_0%,#07111F_55%,#050B14_100%)]" />
-      <div className="absolute inset-0 -z-10">
-        <AnimatedTechnicalBackground />
-      </div>
+      <AnimatedTechnicalBackground />
       <div aria-hidden="true" className="glow-divider absolute inset-x-0 top-0 opacity-50" />
 
       <div className="container-site grid items-start gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,6fr)] lg:gap-16">
-        <div className="lg:sticky lg:top-28">
+        <div data-bg-anchor="copy" className="lg:sticky lg:top-28">
           <p data-reveal className="eyebrow">
             <span className="h-px w-6 bg-cyan" aria-hidden="true" />
             Start a Conversation
@@ -65,6 +63,7 @@ export function ConsultationSection() {
 
         <div
           data-reveal
+          data-bg-anchor="form"
           className="relative rounded-[28px] border border-[rgba(100,180,255,0.18)] bg-[rgba(11,22,38,0.84)] p-5 shadow-[0_40px_100px_-40px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:p-9 lg:p-11"
         >
           <div aria-hidden="true" className="glow-divider absolute inset-x-10 top-0 opacity-60" />

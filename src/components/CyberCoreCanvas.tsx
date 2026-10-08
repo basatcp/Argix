@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { signalCoreReady } from './backgrounds/motion';
 
 const FALLBACK_ALT =
   'The Hexagonal Cyber Core: a layered hexagonal structure with a glowing central cube, inner rotating rings, an opened outer shield and six orbiting service modules.';
@@ -14,6 +15,12 @@ export function CyberCoreCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduced = useReducedMotion();
   const [status, setStatus] = useState<Status>('loading');
+
+  // Let the surrounding background know the core is on screen (it waits, so it
+  // never competes with the core's start-up).
+  useEffect(() => {
+    if (status !== 'loading') signalCoreReady();
+  }, [status]);
 
   useEffect(() => {
     let disposed = false;

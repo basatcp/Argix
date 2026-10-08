@@ -5,6 +5,7 @@ import { STEPS } from '../../data/site';
 import { Icon } from '../Icons';
 import { MiniCore } from '../MiniCore';
 import { SectionHeading } from '../ui';
+import { SectionBackground } from '../backgrounds/SectionBackground';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -43,7 +44,8 @@ export function Process() {
   const complete = active === STEPS.length - 1;
 
   return (
-    <section id="process" aria-labelledby="process-title" className="section-pad relative">
+    <section id="process" aria-labelledby="process-title" className="section-pad relative isolate">
+      <SectionBackground variant="process" />
       <div className="container-site">
         <SectionHeading
           id="process-title"
@@ -66,7 +68,7 @@ export function Process() {
             </div>
           </div>
 
-          <div className="hidden lg:block">
+          <div data-bg-anchor="panel-col" className="hidden lg:block">
             <div className="sticky top-32">
               <div className="card relative overflow-hidden p-8">
                 <div aria-hidden="true" className="grid-bg absolute inset-0 opacity-60" />
@@ -93,7 +95,7 @@ export function Process() {
             </div>
           </div>
 
-          <ol ref={listRef} className="relative">
+          <ol ref={listRef} data-bg-anchor="steps" className="relative">
             <div aria-hidden="true" className="absolute bottom-6 left-[19px] top-6 w-px bg-line" />
             <div ref={progressRef} aria-hidden="true" className="absolute bottom-6 left-[19px] top-6 w-px origin-top bg-gradient-to-b from-cyan to-primary" />
             {STEPS.map((step, i) => {
@@ -101,6 +103,7 @@ export function Process() {
               return (
                 <li key={step.title} data-step className="relative pb-10 pl-14 last:pb-0 md:pb-12">
                   <span
+                    data-bg-anchor="step"
                     className={`absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-semibold transition-colors duration-500 ${
                       state === 'todo' ? 'border-line bg-ink-900 text-muted' : 'border-electric/60 bg-ink-800 text-cyan'
                     } ${state === 'active' ? 'shadow-[0_0_0_4px_rgba(30,167,255,0.12)]' : ''}`}
