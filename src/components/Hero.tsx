@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { BRAND } from '../data/site';
 import { prefersReducedMotion } from '../hooks/useReducedMotion';
-import { HeroSequence } from './HeroSequence';
+import { CyberCoreCanvas } from './CyberCoreCanvas';
 import { Icon } from './Icons';
 
 export function Hero() {
@@ -28,7 +28,7 @@ export function Hero() {
       <div aria-hidden="true" className="grid-bg absolute inset-0 -z-10 opacity-70" />
       <div aria-hidden="true" className="glow-divider absolute inset-x-0 bottom-0" />
 
-      <div className="container-site grid items-center gap-10 md:grid-cols-2 md:gap-8 lg:gap-10">
+      <div className="container-site grid items-center gap-10 md:grid-cols-2 md:gap-6 lg:grid-cols-[45%_55%] lg:gap-0">
         <div className="relative z-10 max-w-[600px]">
           <p data-hero className="eyebrow">
             <span className="h-px w-6 bg-cyan" aria-hidden="true" />
@@ -42,8 +42,8 @@ export function Hero() {
             Build Secure Technology <span className="bg-gradient-to-r from-electric to-cyan bg-clip-text text-transparent">That Scales</span>
           </h1>
           <p data-hero className="lead mt-6 max-w-[540px] md:!text-[18px]">
-            Create software and AI systems, run them on secure cloud infrastructure, and protect them with security testing, compliance, and
-            monitoring.
+            We design and develop software, AI and cloud systems with security built in from day one, then protect them with testing,
+            compliance and continuous monitoring.
           </p>
           <div data-hero className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a href={BRAND.bookingUrl} className="btn-primary">
@@ -60,8 +60,8 @@ export function Hero() {
           </p>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[520px] md:max-w-none">
-          <HeroSequence />
+        <div className="relative mx-auto w-full max-w-[560px] md:max-w-none lg:-mr-6">
+          <CyberCoreCanvas />
         </div>
       </div>
     </section>
