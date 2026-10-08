@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-950: #050b14;
+    --bg-900: #07111f;
+    --bg-800: #0a1424;
+    --primary: #3b82f6;
+    --electric: #1ea7ff;
+    --cyan: #39d7ff;
+    --text: #f7f9fc;
+    --muted: #9ba8ba;
+    --card: #0e1b2c;
+    --line: rgba(90, 150, 220, 0.18);
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink-950 font-sans text-text antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    text-rendering: optimizeLegibility;
+  }
+
+  section[id],
+  [id='contact'] {
+    scroll-margin-top: 80px;
+  }
+
+  ::selection {
+    background: rgba(59, 130, 246, 0.35);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-site px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-pad {
+    @apply py-16 md:py-20 lg:py-[120px];
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan;
+  }
+
+  .h-section {
+    @apply text-[34px] font-semibold leading-[1.1] tracking-[-0.025em] text-text sm:text-[42px] lg:text-[50px];
+    text-wrap: balance;
+  }
+
+  .lead {
+    @apply text-base leading-relaxed text-muted md:text-lg;
+    text-wrap: pretty;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-btn px-5 py-3.5 text-[15px] font-semibold transition duration-200 focus-visible:outline-offset-4;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-white shadow-[0_0_0_1px_rgba(255,255,255,0.08)_inset,0_10px_30px_-10px_rgba(59,130,246,0.75)] hover:bg-[#4b8ef8] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.12)_inset,0_14px_36px_-10px_rgba(30,167,255,0.85)];
+  }
+
+  .btn-secondary {
+    @apply btn border border-line bg-white/[0.02] text-text hover:border-electric/50 hover:bg-electric/[0.06];
+  }
+
+  .card {
+    @apply rounded-card border border-line bg-card/70;
+  }
+
+  .icon-tile {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-ink-800 text-cyan;
+  }
+
+  /* Subtle engineering grid */
+  .grid-bg {
+    background-image: linear-gradient(rgba(90, 150, 220, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(90, 150, 220, 0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+
+  /* Thin glowing divider */
+  .glow-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(57, 215, 255, 0.45), rgba(59, 130, 246, 0.45), transparent);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ---------- Mini Cyber Core (SVG) ---------- */
+.mini-core .mc-stroke {
+  stroke: rgba(110, 160, 220, 0.28);
+  stroke-width: 1.4;
+  transition: stroke 0.6s ease, opacity 0.6s ease, fill 0.6s ease;
+}
+.mini-core .mc-fill {
+  fill: rgba(14, 27, 44, 0.8);
+}
+.mini-core .mc-dot {
+  fill: rgba(110, 160, 220, 0.28);
+  transition: fill 0.6s ease;
+}
+.mini-core .mc-core {
+  fill: rgba(14, 27, 44, 0.9);
+}
+.mini-core .mc-layer {
+  transition: filter 0.6s ease, opacity 0.6s ease;
+}
+.mini-core .mc-layer.is-on .mc-stroke {
+  stroke: #1ea7ff;
+}
+.mini-core .mc-layer.is-on .mc-dot {
+  fill: #39d7ff;
+}
+.mini-core .mc-layer.is-on .mc-fill {
+  fill: rgba(30, 167, 255, 0.08);
+}
+.mini-core .mc-layer.is-on .mc-core {
+  fill: rgba(57, 215, 255, 0.35);
+}
+.mini-core .mc-layer.is-focus .mc-stroke {
+  stroke: #39d7ff;
+  stroke-width: 1.8;
+}
+.mini-core .mc-layer.is-focus {
+  filter: drop-shadow(0 0 4px rgba(57, 215, 255, 0.65));
+}
+.mini-core .mc-pulse {
+  stroke: transparent;
+  stroke-width: 1.8;
+}
+.mini-core .mc-layer.is-on .mc-pulse {
+  stroke: #bff3ff;
+  stroke-dasharray: 5 61;
+  animation: mc-flow 3.2s linear infinite;
+}
+.mc-spin,
+.mc-spin-rev,
+.mc-spin-slow {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.mc-spin {
+  animation: mc-rot 28s linear infinite;
+}
+.mc-spin-rev {
+  animation: mc-rot 22s linear infinite reverse;
+}
+.mc-spin-slow {
+  animation: mc-rot 90s linear infinite;
+}
+@keyframes mc-rot {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes mc-flow {
+  from {
+    stroke-dashoffset: 66;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
