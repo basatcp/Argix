@@ -2,7 +2,6 @@ import { useId, useState } from 'react';
 import { BRAND, FAQS, FOOTER_COLUMNS } from '../../data/site';
 import { Icon } from '../Icons';
 import { Logo } from '../Logo';
-import { MiniCore } from '../MiniCore';
 import { SectionHeading } from '../ui';
 
 /* SECTION 11: FAQ (accessible accordion) */
@@ -65,46 +64,6 @@ export function Faq() {
             <FaqItem key={f.q} q={f.q} a={f.a} open={open === i} onToggle={() => setOpen(open === i ? null : i)} />
           ))}
         </ul>
-      </div>
-    </section>
-  );
-}
-
-/* SECTION 12: Final CTA */
-export function FinalCta() {
-  return (
-    <section id="contact" aria-labelledby="cta-title" className="relative px-4 pb-16 sm:px-6 md:pb-20 lg:pb-[120px]">
-      <div className="relative mx-auto max-w-site overflow-hidden rounded-[24px] border border-electric/25 bg-[radial-gradient(ellipse_at_80%_20%,#0F2D57_0%,#0A1B36_45%,#07111F_100%)] px-6 py-16 md:px-14 md:py-20 lg:py-24">
-        <div aria-hidden="true" className="grid-bg absolute inset-0 opacity-50" />
-        <MiniCore
-          lit={['core', 'rings', 'structure', 'pipeline', 'shield', 'modules']}
-          className="pointer-events-none absolute -right-28 top-1/2 h-[440px] w-[440px] -translate-y-1/2 opacity-20 md:-right-10 lg:right-8 lg:opacity-40"
-        />
-        <div className="relative max-w-[640px]">
-          <p data-reveal className="eyebrow">
-            Free consultation
-          </p>
-          <h2 id="cta-title" data-reveal className="h-section mt-4">
-            Tell Us What You’re Building or Protecting
-          </h2>
-          <p data-reveal className="lead mt-5 max-w-[540px]">
-            Book a free consultation with an engineer to discuss software, AI, cloud or cybersecurity requirements.
-          </p>
-          <div data-reveal className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a href={BRAND.consultUrl} className="btn-primary">
-              Book a Free Consultation
-              <Icon name="arrowRight" className="h-4 w-4" />
-            </a>
-            <a href={BRAND.whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
-              <Icon name="whatsapp" className="h-5 w-5" />
-              Chat on WhatsApp
-              <span className="sr-only">(opens in a new tab)</span>
-            </a>
-          </div>
-          <p data-reveal className="mt-5 text-sm text-muted">
-            We typically reply within one business day.
-          </p>
-        </div>
       </div>
     </section>
   );

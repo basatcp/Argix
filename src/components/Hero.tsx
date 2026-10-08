@@ -1,12 +1,13 @@
 import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { BRAND } from '../data/site';
 import { prefersReducedMotion } from '../hooks/useReducedMotion';
 import { CyberCoreCanvas } from './CyberCoreCanvas';
 import { Icon } from './Icons';
+import { useConsultation } from './consultation/ConsultationModal';
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const { openConsultation } = useConsultation();
 
   useLayoutEffect(() => {
     if (prefersReducedMotion()) return;
@@ -46,10 +47,10 @@ export function Hero() {
             compliance and continuous monitoring.
           </p>
           <div data-hero className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a href={BRAND.bookingUrl} className="btn-primary">
+            <button type="button" aria-haspopup="dialog" onClick={(e) => openConsultation('hero', e.currentTarget)} className="btn-primary">
               Book a Free Consultation
               <Icon name="arrowRight" className="h-4 w-4" />
-            </a>
+            </button>
             <a href="#services" className="btn-secondary">
               Explore Services
             </a>

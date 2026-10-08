@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { BRAND, NAV } from '../data/site';
+import { useConsultation } from './consultation/ConsultationModal';
 import { Icon } from './Icons';
 import { Logo } from './Logo';
 
@@ -7,6 +8,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const { openConsultation } = useConsultation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -54,9 +56,15 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a href={BRAND.bookingUrl} className="btn-primary hidden !py-2.5 !text-sm sm:inline-flex">
-            Book a Consultation
-          </a>
+          <button
+            type="button"
+            data-consultation-trigger
+            aria-haspopup="dialog"
+            onClick={(e) => openConsultation('nav', e.currentTarget)}
+            className="btn-primary hidden !py-2.5 !text-sm sm:inline-flex"
+          >
+            Book a Free Consultation
+          </button>
           <button
             ref={toggleRef}
             type="button"
@@ -86,9 +94,18 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <a href={BRAND.bookingUrl} onClick={() => setOpen(false)} className="btn-primary mt-3 w-full">
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            onClick={() => {
+              setOpen(false);
+              // The menu closes; focus returns to the menu toggle afterwards.
+              openConsultation('mobile-nav', toggleRef.current);
+            }}
+            className="btn-primary mt-3 w-full"
+          >
             Book a Free Consultation
-          </a>
+          </button>
         </nav>
       </div>
     </header>

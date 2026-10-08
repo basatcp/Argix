@@ -18,8 +18,16 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* No CSS scroll-behavior: smooth. It turns GSAP ScrollTrigger's internal measuring
+       jumps into animations that fight the user's scroll; in-page links are smoothed in JS (App.tsx). */
     -webkit-text-size-adjust: 100%;
+    /* Reserve the scrollbar gutter so locking scroll for the modal causes no layout shift. */
+    scrollbar-gutter: stable;
+  }
+
+  html.cm-lock,
+  html.cm-lock body {
+    overflow: hidden;
   }
 
   body {
@@ -45,9 +53,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
     *,
     *::before,
     *::after {
@@ -114,6 +119,175 @@
   .glow-divider {
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(57, 215, 255, 0.45), rgba(59, 130, 246, 0.45), transparent);
+  }
+}
+
+@layer components {
+  /* ---------- Consultation form ---------- */
+  .cf-label {
+    @apply block text-[13.5px] font-medium text-[#D5DDE8];
+  }
+
+  .cf-input {
+    /* 16px on phones: smaller text makes iOS Safari zoom in on focus. */
+    @apply block h-[50px] w-full rounded-[13px] border border-[rgba(100,180,255,0.18)] bg-ink-900 px-4 text-base text-text placeholder:text-[#6F7E93] sm:text-[15px];
+    transition: border-color 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+  }
+  .cf-input:hover {
+    border-color: rgba(100, 180, 255, 0.3);
+  }
+  .cf-input:focus,
+  .cf-input:focus-visible {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+  }
+  .cf-input[aria-invalid='true'] {
+    border-color: rgba(248, 113, 113, 0.6);
+  }
+  .cf-input[aria-invalid='true']:focus {
+    border-color: #f87171;
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.14);
+  }
+  .cf--section .cf-input {
+    @apply h-[54px] sm:text-[15.5px];
+  }
+  .cf-textarea,
+  .cf--section .cf-textarea {
+    @apply h-auto min-h-[124px] resize-y py-3.5 leading-relaxed;
+  }
+  .cf-select {
+    @apply cursor-pointer appearance-none pr-11;
+  }
+  .cf-select.is-empty {
+    color: #6f7e93;
+  }
+  .cf-select option {
+    color: #f7f9fc;
+    background: #0e1b2c;
+  }
+
+  .cf-choice {
+    @apply flex h-12 cursor-pointer select-none items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-[rgba(100,180,255,0.18)] bg-ink-900 px-3 text-[14px] font-medium text-muted;
+    transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease;
+  }
+  .cf-choice:hover {
+    border-color: rgba(100, 180, 255, 0.32);
+    color: #f7f9fc;
+  }
+  .peer:checked ~ .cf-choice {
+    border-color: rgba(59, 130, 246, 0.75);
+    background-color: rgba(59, 130, 246, 0.12);
+    color: #f7f9fc;
+  }
+  .peer:focus-visible ~ .cf-choice {
+    outline: 2px solid #39d7ff;
+    outline-offset: 2px;
+  }
+
+  .cf-error {
+    @apply mt-1.5 flex gap-1.5 text-[12.5px] leading-snug text-[#FCA5A5];
+  }
+
+  .cf-spinner {
+    @apply inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white;
+  }
+
+  .cf-success {
+    animation: cf-fade-up 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .cf-check-ring {
+    fill: rgba(59, 130, 246, 0.08);
+    stroke: #3b82f6;
+    stroke-width: 2;
+    stroke-dasharray: 183;
+    stroke-dashoffset: 183;
+    animation: cf-draw 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .cf-check-tick {
+    fill: none;
+    stroke: #39d7ff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: cf-draw 420ms 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* ---------- Consultation modal ---------- */
+  .cm-overlay {
+    background: rgba(3, 8, 16, 0.72);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cm-overlay[data-state='open'] {
+    opacity: 1;
+  }
+  .cm-overlay[data-state='closing'] {
+    opacity: 0;
+    transition-duration: 240ms;
+    transition-timing-function: ease-in;
+  }
+  .cm-panel {
+    max-height: 92vh;
+    max-height: 92dvh;
+    background: linear-gradient(180deg, #0e1b2c 0%, #0a1424 100%);
+    box-shadow: 0 40px 120px -30px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+    transition:
+      opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cm-overlay[data-state='open'] .cm-panel {
+    opacity: 1;
+    transform: none;
+  }
+  .cm-overlay[data-state='closing'] .cm-panel {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+    transition-duration: 240ms;
+    transition-timing-function: ease-in;
+  }
+
+  /* ---------- Technical background ---------- */
+  .tb-wrap {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  }
+  .tb-glow {
+    background: radial-gradient(closest-side, rgba(59, 130, 246, 0.16), rgba(30, 167, 255, 0.05) 55%, transparent 100%);
+    animation: tb-breathe 10s ease-in-out infinite;
+  }
+}
+
+@keyframes cf-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes cf-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes tb-breathe {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
   }
 }
 

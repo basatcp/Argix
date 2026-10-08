@@ -5,10 +5,6 @@ export const BRAND = {
   tagline: 'Secure software, AI, cloud and cybersecurity services for modern businesses.',
   // TODO: Replace placeholders with real contact channels before launch.
   email: 'hello@example.com',
-  /** In-page anchor used by header and hero CTAs. */
-  bookingUrl: '#contact',
-  /** Final consultation action. Swap for a scheduling link (e.g. Cal.com, Calendly) when available. */
-  consultUrl: 'mailto:hello@example.com?subject=Free%20consultation',
   whatsappUrl: 'https://wa.me/10000000000',
   linkedinUrl: 'https://www.linkedin.com/company/example',
 };
