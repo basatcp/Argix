@@ -22,10 +22,47 @@ export interface CyberCoreOptions {
   reducedMotion: boolean;
   quality: 'high' | 'low';
   onFirstFrame?: () => void;
+  /** Keyframe-render mode: no timeline, no loop, no particles. Drive it with `renderKeyframe`. */
+  manual?: boolean;
+}
+
+/** Visual state of one keyframe. Every value is 0..1. */
+export interface KeyframeState {
+  glow: number;
+  circuit: number;
+  indicator: number;
+  unlock: number;
+  open: number;
+  iris: number;
+  reveal: number;
+  nodes: number;
+  orbit: number;
+  /** Appearance of each of the six orbiting modules. */
+  modules: number[];
+}
+
+export interface Ellipse {
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+  /** Rotation of the rx axis in radians. */
+  angle: number;
+}
+
+/** Screen-space guides (normalised 0..1 canvas coordinates) for the 2D frame player. */
+export interface KeyframeGuides {
+  core: { x: number; y: number };
+  /** Ellipses traced by circles of the given radii in the inner-ring plane. */
+  rings: Record<string, Ellipse>;
+  /** Module orbit as a closed polyline; `front` is 1 when the point is in front of the core. */
+  orbit: [number, number, number][];
 }
 
 export interface CyberCoreHandle {
   dispose: () => void;
+  renderKeyframe: (state: KeyframeState) => void;
+  guides: (ringRadii: number[]) => KeyframeGuides;
 }
 
 const COLORS = {
@@ -480,6 +517,7 @@ export function createCyberCore(canvas: HTMLCanvasElement, opts: CyberCoreOption
     }),
   );
   scene.add(particles);
+  if (opts.manual) particles.visible = false;
 
   // State + timeline ------------------------------------------------------------
   const S = {
@@ -692,7 +730,11 @@ export function createCyberCore(canvas: HTMLCanvasElement, opts: CyberCoreOption
 
   ro.observe(container);
   resize();
-  if (opts.reducedMotion) {
+  if (opts.manual) {
+    // Fixed, readable attitudes for the stills. The cube shows three faces.
+    cube.rotation.set(0.55, 0.78, 0);
+    frameCube.rotation.set(0.3, 0, 0.2);
+  } else if (opts.reducedMotion) {
     // Final state, no opening sequence, no continuous motion.
     tl.progress(1);
     renderFrame(0);
@@ -702,7 +744,63 @@ export function createCyberCore(canvas: HTMLCanvasElement, opts: CyberCoreOption
     start();
   }
 
+  const toScreen = (v: THREE.Vector3) => {
+    const p = v.clone().project(camera);
+    return [(p.x + 1) / 2, (1 - p.y) / 2] as const;
+  };
+  const viewZ = (v: THREE.Vector3) => v.clone().applyMatrix4(camera.matrixWorldInverse).z;
+
+  function fitEllipse(pts: (readonly [number, number])[]): Ellipse {
+    const n = pts.length;
+    const cx = pts.reduce((a, p) => a + p[0], 0) / n;
+    const cy = pts.reduce((a, p) => a + p[1], 0) / n;
+    let sxx = 0;
+    let syy = 0;
+    let sxy = 0;
+    for (const [x, y] of pts) {
+      sxx += (x - cx) ** 2;
+      syy += (y - cy) ** 2;
+      sxy += (x - cx) * (y - cy);
+    }
+    const angle = 0.5 * Math.atan2(2 * sxy, sxx - syy);
+    const c = Math.cos(angle);
+    const sn = Math.sin(angle);
+    let rx = 0;
+    let ry = 0;
+    for (const [x, y] of pts) {
+      rx = Math.max(rx, Math.abs((x - cx) * c + (y - cy) * sn));
+      ry = Math.max(ry, Math.abs(-(x - cx) * sn + (y - cy) * c));
+    }
+    return { cx, cy, rx, ry, angle };
+  }
+
   return {
+    renderKeyframe(state) {
+      Object.assign(S, state, { pulse: 0, ringSpin: 1, yaw: 1, cam: 1 });
+      moduleState.forEach((m, i) => (m.v = state.modules[i] ?? 0));
+      renderFrame(0);
+    },
+    guides(ringRadii) {
+      scene.updateMatrixWorld(true);
+      const core = root.localToWorld(new THREE.Vector3());
+      const [x, y] = toScreen(core);
+      const coreZ = viewZ(core);
+      const ringsOut: Record<string, Ellipse> = {};
+      for (const r of ringRadii) {
+        const pts = Array.from({ length: 72 }, (_, i) => {
+          const a = (i / 72) * Math.PI * 2;
+          return toScreen(rings.localToWorld(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, 0)));
+        });
+        ringsOut[String(r)] = fitEllipse(pts);
+      }
+      const orbitPts: [number, number, number][] = Array.from({ length: 96 }, (_, i) => {
+        const a = (i / 96) * Math.PI * 2;
+        const w = orbit.localToWorld(new THREE.Vector3(Math.cos(a) * ORBIT_R, Math.sin(a) * ORBIT_R, 0));
+        const [px, py] = toScreen(w);
+        return [px, py, viewZ(w) > coreZ ? 1 : 0];
+      });
+      return { core: { x, y }, rings: ringsOut, orbit: orbitPts };
+    },
     dispose() {
       stop();
       tl.kill();
