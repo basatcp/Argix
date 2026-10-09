@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, type RefObject } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { prefersReducedMotion } from './useReducedMotion';
@@ -11,6 +11,9 @@ gsap.registerPlugin(ScrollTrigger);
  * 14px, cards and groups 20px), 650 ms, ease-out-quint (= cubic-bezier(0.22, 1,
  * 0.36, 1)), 80 ms stagger. Initial state is set from JS so content stays
  * visible if scripts fail; skipped entirely for reduced motion.
+ *
+ * Called once per page with the page's root element, so every page (and every
+ * visit to it) sets up its own reveals and cleans them up when it unmounts.
  */
 const EASE = 'power4.out'; // quint out, i.e. cubic-bezier(0.22, 1, 0.36, 1)
 const rise = (el: Element) => {
@@ -18,9 +21,19 @@ const rise = (el: Element) => {
   if (el.tagName === 'P') return 14;
   return 20;
 };
-export function useScrollReveal() {
+function hashTarget() {
+  try {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    return id ? document.getElementById(id) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function useScrollReveal(rootRef: RefObject<HTMLElement>) {
   useLayoutEffect(() => {
-    if (prefersReducedMotion()) return;
+    const root = rootRef.current;
+    if (prefersReducedMotion() || !root) return;
     const revealed = new WeakSet<Element>();
     let items: HTMLElement[] = [];
     const reveal = (els: Element[]) => {
@@ -43,9 +56,12 @@ export function useScrollReveal() {
     };
 
     const ctx = gsap.context(() => {
-      items = gsap.utils.toArray<HTMLElement>('[data-reveal]');
+      items = gsap.utils.toArray<HTMLElement>('[data-reveal]', root);
+      // A #fragment target (or the block containing it) only fades, without the rise, so a
+      // deep link lands exactly where the router scrolled it.
+      const target = hashTarget();
       // Opacity only (not visibility) so keyboard focus can still reach content before it is revealed.
-      gsap.set(items, { opacity: 0, y: (_: number, el: Element) => rise(el) });
+      gsap.set(items, { opacity: 0, y: (_: number, el: Element) => (target && el.contains(target) ? 0 : rise(el)) });
       ScrollTrigger.batch(items, {
         start: 'top 88%',
         once: true,
@@ -53,14 +69,14 @@ export function useScrollReveal() {
       });
 
       // Line-draw dividers
-      gsap.utils.toArray<HTMLElement>('[data-draw]').forEach((el) => {
+      gsap.utils.toArray<HTMLElement>('[data-draw]', root).forEach((el) => {
         gsap.fromTo(
           el,
           { scaleX: 0 },
           { scaleX: 1, duration: 1.2, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 92%', once: true } },
         );
       });
-    });
+    }, root);
 
     // Trigger positions are measured once; anything that changes the page height
     // afterwards (web fonts swapping in, the FAQ accordion, validation messages)
@@ -78,14 +94,14 @@ export function useScrollReveal() {
       }, 150);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    // Observing <main> also covers web fonts swapping in.
+    // Observing the page also covers web fonts swapping in.
     // After every refresh (ours or ScrollTrigger's own), once the scroll position is restored.
     const onRefreshed = () => {
       requestAnimationFrame(revealPassed);
     };
     ScrollTrigger.addEventListener('refresh', onRefreshed);
     const ro = new ResizeObserver(refresh);
-    ro.observe(document.getElementById('main') ?? document.body);
+    ro.observe(root);
 
     return () => {
       window.clearTimeout(timer);
@@ -94,5 +110,5 @@ export function useScrollReveal() {
       ro.disconnect();
       ctx.revert();
     };
-  }, []);
+  }, [rootRef]);
 }

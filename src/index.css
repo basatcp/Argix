@@ -36,9 +36,14 @@
     text-rendering: optimizeLegibility;
   }
 
-  section[id],
-  [id='contact'] {
+  /* :where() keeps this at zero specificity, so scroll-mt-* utilities can override it. */
+  :where(section[id], [id='contact']) {
     scroll-margin-top: 80px;
+  }
+
+  /* Headings and sections receive focus after navigation (so Tab continues from there); they are not controls. */
+  [tabindex='-1']:focus {
+    outline: none;
   }
 
   ::selection {
@@ -113,6 +118,11 @@
     background-size: 56px 56px;
     mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
     -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+
+  /* The hero's bottom edge already draws the seam; the next section doesn't draw a second one. */
+  .page-hero + * > .section-seam {
+    display: none;
   }
 
   /* Thin glowing divider */
@@ -254,6 +264,29 @@
   }
 }
 
+/* ---------- Page transitions: fade out, then fade in with a short rise ---------- */
+.page-view {
+  transition:
+    opacity 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.page-view[data-phase='idle'] {
+  transition: none;
+}
+.page-view[data-phase='out'] {
+  opacity: 0;
+  transition: opacity 160ms ease-in;
+}
+.page-view[data-phase='enter'] {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition: none;
+}
+.page-view[data-phase='in'] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 @keyframes cf-draw {
   to {
     stroke-dashoffset: 0;
@@ -277,6 +310,9 @@
 }
 
 /* ---------- Mini Cyber Core (SVG) ---------- */
+.mini-core[data-active='false'] * {
+  animation-play-state: paused;
+}
 .mini-core .mc-stroke {
   stroke: rgba(110, 160, 220, 0.28);
   stroke-width: 1.4;

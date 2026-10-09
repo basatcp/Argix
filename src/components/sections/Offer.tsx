@@ -110,7 +110,7 @@ export function ServiceCards() {
           {SERVICES.map((s) => (
             <li key={s.title} data-reveal>
               <a
-                href="#contact"
+                href={`/services#${s.slug}`}
                 className="card group flex h-full flex-col p-6 transition duration-300 hover:-translate-y-1 hover:border-electric/45 hover:bg-card"
               >
                 <div className="flex items-center justify-between">

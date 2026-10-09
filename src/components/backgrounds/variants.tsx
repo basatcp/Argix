@@ -12,6 +12,18 @@ import { SecurityRings } from './SecurityRings';
 import { TechnicalGrid } from './TechnicalGrid';
 import { byTier, useBg, type AnchorRect } from './context';
 import { convergingRoutes, hexagon, horizontalFlows, routedTraces, scatter, toD, type Pt, type Trace } from './geometry';
+import {
+  BuildLayers,
+  CtaLayers,
+  PageHeroBuild,
+  PageHeroCalm,
+  PageHeroNetwork,
+  PageHeroProcess,
+  PageHeroSecure,
+  SecureLayers,
+  TestimonialsLayers,
+  TimelineLayers,
+} from './pageVariants';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,6 +34,9 @@ gsap.registerPlugin(ScrollTrigger);
  *   hero (high) · process (medium-high) · services, pillars, security, split,
  *   consult (medium) · industries (low-medium) · metrics, strip (low) ·
  *   certifications (very low) · faq (minimal) · footer (almost static)
+ *
+ * Inner pages (pageVariants.tsx): page-* heroes (medium, below the homepage
+ * hero) · build, secure, cta (medium) · testimonials (low-medium) · timeline
  */
 export type Variant =
   | 'hero'
@@ -36,7 +51,17 @@ export type Variant =
   | 'blueprint'
   | 'minimal'
   | 'consult'
-  | 'footer';
+  | 'footer'
+  | 'page-build'
+  | 'page-network'
+  | 'page-process'
+  | 'page-secure'
+  | 'page-calm'
+  | 'build'
+  | 'secure'
+  | 'testimonials'
+  | 'timeline'
+  | 'cta';
 
 interface VariantSpec {
   Component: ComponentType;
@@ -482,4 +507,14 @@ export const VARIANTS: Record<Variant, VariantSpec> = {
   minimal: { Component: MinimalLayers },
   consult: { Component: ConsultLayers, pointer: 16 },
   footer: { Component: FooterLayers },
+  'page-build': { Component: PageHeroBuild, parallax: 24 },
+  'page-network': { Component: PageHeroNetwork, parallax: 24 },
+  'page-process': { Component: PageHeroProcess, parallax: 24 },
+  'page-secure': { Component: PageHeroSecure, parallax: 24 },
+  'page-calm': { Component: PageHeroCalm, parallax: 16 },
+  build: { Component: BuildLayers },
+  secure: { Component: SecureLayers },
+  testimonials: { Component: TestimonialsLayers },
+  timeline: { Component: TimelineLayers, parallax: 30 },
+  cta: { Component: CtaLayers },
 };

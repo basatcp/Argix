@@ -723,6 +723,9 @@ export function createCyberCore(canvas: HTMLCanvasElement, opts: CyberCoreOption
       glowTex.dispose();
       envRT.dispose();
       renderer.dispose();
+      // Release the WebGL context now rather than at garbage collection: returning to the
+      // homepage creates a new one, and browsers cap how many can be alive at once.
+      renderer.forceContextLoss();
     },
   };
 }

@@ -1,6 +1,6 @@
 # Corelayer: Secure Software, AI & Cybersecurity Website
 
-A responsive B2B marketing site for a company that builds software, AI and cloud systems and secures them. The visual identity centres on the **3D Hexagonal Cyber Core**, a real-time WebGL object that opens in stages in the hero and returns as a simplified SVG core in later sections.
+A responsive B2B marketing site for a company that builds software, AI and cloud systems and secures them: a homepage plus Services, Industries, Process, Security and FAQ pages. The visual identity centres on the **3D Hexagonal Cyber Core**, a real-time WebGL object that opens in stages in the homepage hero and returns as a simplified SVG core in later sections.
 
 > "Corelayer" is a placeholder brand name. Rename it in `src/data/site.ts`, `index.html` and `public/favicon.svg`.
 
@@ -16,9 +16,25 @@ A responsive B2B marketing site for a company that builds software, AI and cloud
 ```bash
 npm install
 npm run dev       # local dev server
-npm run build     # typecheck + production build to dist/
+npm run build     # typecheck + production build to dist/ (one HTML file per page)
 npm run preview   # serve the production build
 ```
+
+## Pages and routing
+
+| Route | Page |
+| --- | --- |
+| `/` | Homepage (hero with the Cyber Core, all summary sections, testimonials, consultation form) |
+| `/services` | Build & Run and Secure & Comply services, integrated approach |
+| `/industries` | Healthcare, Enterprise & SaaS, E-Commerce & Retail, Startups & MVPs, Fintech |
+| `/process` | Six-stage process with a scroll-driven timeline |
+| `/security` | Penetration testing, GRC & compliance readiness, vCISO, SOC monitoring, incident response, secure development |
+| `/faq` | Grouped questions |
+
+- **Router:** `src/router.tsx` is a small built-in router (no dependency). Pages use plain links (`<a href="/security#vciso">`); one click handler turns same-origin links into in-app navigation with smooth in-page scrolling, back/forward scroll restoration, and title/meta updates. The route table (titles, descriptions) is `src/data/routes.ts`.
+- **Layout:** `src/components/layout/PageView.tsx` renders the current page plus the footer, with a short page transition (fade out 160 ms, then fade in with a 12 px rise over 340 ms; none with reduced motion). It also moves focus to the new page's heading. The header and the consultation popup are shared by every page.
+- **Shared page parts** (`src/components/page/`): `PageHero` (inner-page hero with breadcrumb and a page-specific diagram), `PageSection` (section rhythm and tones), `FinalCTA`, `ConsultButton` (opens the popup), `Breadcrumbs`, and `Diagram` (kit for the technical diagrams, built on the background system). `src/components/FAQAccordion.tsx` is shared by the homepage FAQ and the FAQ page.
+- **Static hosting:** the build writes `dist/<route>/index.html` for every page, each with its own title, description, canonical URL and structured data (breadcrumbs; FAQPage on `/faq`). It also writes `404.html` (noindex; the app shows a not-found page), `sitemap.xml` and `robots.txt`. Any static host works without rewrite rules. Netlify, Vercel, Cloudflare Pages, GitHub Pages and S3 all serve `/services` from `services/index.html`, and nginx does with `try_files $uri $uri/ /index.html`. The domain comes from `SITE_URL` in `src/data/routes.ts`.
 
 ## Structure
 
@@ -26,12 +42,20 @@ npm run preview   # serve the production build
 src/
   three/CyberCore.ts      WebGL scene, GSAP opening timeline, idle loop
   three/icons.ts          Canvas-drawn line icons for orbiting modules
+  router.tsx              Client-side routing, link handling, page meta
+  pages/                  HomePage, ServicesPage, IndustriesPage, ProcessPage, SecurityPage, FaqPage, NotFoundPage
   components/
     CyberCoreCanvas.tsx   Lazy mount, WebGL detection, static fallback
     MiniCore.tsx          Simplified SVG core (pillars, process, CTA)
-    Hero.tsx, Header.tsx, Icons.tsx, Logo.tsx, ui.tsx
-    sections/             Offer, Trust, Process, Security, Closing
-  data/site.ts            All copy, links and placeholders
+    Hero.tsx, Header.tsx, Icons.tsx, Logo.tsx, ui.tsx, FAQAccordion.tsx
+    layout/PageView.tsx   Routed page + footer, page transitions
+    page/                 PageHero, PageSection, FinalCTA, ConsultButton, Breadcrumbs, Diagram kit
+    sections/             Homepage sections: Offer, Trust, Process, Security, Closing
+    testimonials/         Homepage testimonials
+    services/, industries/, process/, security/, faq/   Inner-page components
+    backgrounds/          Section background system (see below)
+    consultation/         Popup, form, homepage section
+  data/                   site.ts (homepage copy), routes.ts, one file per inner page, testimonials.ts
   hooks/                  Reduced-motion + scroll reveal
 public/
   cyber-core.webp/.png    Static render of the core (no-WebGL fallback)
@@ -104,7 +128,20 @@ All section backgrounds come from one system in `src/components/backgrounds/`. E
 | Certifications | `blueprint` | Very low | blueprint grid, sparse diagonals, light sweep every ~13 s |
 | FAQ | `minimal` | Minimal | oversized hexagon outlines, very slow glow drift |
 | Consultation | `consult` | Medium | hex grid, routes converging on the form, nodes drifting inward, pulses, slow expanding rings, glow (pointer), particles |
+| Testimonials | `testimonials` | Low-medium | faint network paths and nodes over a low hex pattern, soft light, one slow horizontal data pulse; node activity rises slightly while a card is hovered |
 | Footer | `footer` | Almost static | faint hex pattern, glow, 3 slow particles |
+
+Inner pages use the same primitives (`pageVariants.tsx`), all lighter than the homepage hero:
+
+| Where | Variant | Intensity | Elements |
+| --- | --- | --- | --- |
+| Inner-page heroes | `page-build`, `page-network`, `page-process`, `page-secure`, `page-calm` | Medium (FAQ calm) | routes from the edges converge on the page's diagram, plus one accent per page: build flows and modules, a honeycomb with routed links, a timeline trace with a walking pulse, rings around the diagram over a node map, or oversized hexagons |
+| Development content | `build` | Medium | modular grid, groups of left-to-right flows with module nodes, pulses on some lanes |
+| Security content | `secure` | Medium | hexagonal field, concentric rings with a scanning arc, node map with rare verification pulses |
+| Process timeline | `timeline` | Low (the timeline carries the motion) | low hex pattern, deep grid with parallax, drifting light, a few particles |
+| Closing call to action | `cta` | Medium | routes from both sides and below converge on the panel, nodes drifting inward, glow, inward particles |
+
+Inner pages also reuse `network`, `monitor`, `split`, `industries`, `blueprint` and `minimal`. Their diagrams (`src/components/page/Diagram.tsx`) use the same strokes, nodes and pulses, draw in once, pause off-screen and are static with reduced motion.
 
 Primitives: `TechnicalGrid`, `HexGrid`, `CircuitLines`, `DataPulse`, `NetworkNodes`, `SecurityRings`, `RadialGlow`, `LightSweep`, `AmbientParticles`. Geometry is generated per section size from a seed (`geometry.ts`), so lines stay 1 px crisp and each section always looks the same.
 
@@ -136,11 +173,16 @@ Opening sequence (`src/three/CyberCore.ts`): closed (0–1.2s) → activation (1
 - Without WebGL a static render (`public/cyber-core.webp`) with alt text is shown.
 - Skip link, visible focus styles, accessible accordion (`aria-expanded` / `aria-controls` / region), semantic section landmarks with headings.
 
+## Testimonials
+
+The homepage "Client Perspective" section (`src/components/testimonials/`) reads `src/data/testimonials.ts`. The entries there are **placeholders** ("Client Name", "Role", "Company"), not endorsements. While any entry has `placeholder: true`, the section shows a visible note saying the testimonials are samples. Before launch, replace them with quotes clients have approved in writing and set `placeholder: false`. Don't add logos or ratings unless they are approved too.
+
 ## Before launch (TODOs)
 
+- Replace the placeholder testimonials in `src/data/testimonials.ts` with verified, approved client testimonials.
 - Connect the consultation form to your CRM or API (see *Connecting a CRM or API*).
 - Replace the stats in `STATS` (`src/data/site.ts`) with verified client metrics. They are placeholders.
 - Confirm the certification list against verified team credentials.
 - Set real `email`, `whatsappUrl`, `linkedinUrl`.
-- Replace `https://www.example.com/` canonical / OG / JSON-LD URLs in `index.html`.
+- Replace `https://www.example.com` in `index.html` and `SITE_URL` in `src/data/routes.ts` (canonical, OG, JSON-LD, sitemap).
 - Link Privacy, Terms and Blog.

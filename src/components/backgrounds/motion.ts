@@ -104,6 +104,11 @@ export function signalCoreReady() {
   coreWaiters.clear();
 }
 
+/** The core unmounted (the homepage was left); the next hero waits for its new core again. */
+export function resetCoreReady() {
+  coreReady = false;
+}
+
 /** Run `fn` once the core is on screen, or after `timeoutMs` at the latest. */
 export function whenCoreReady(fn: () => void, timeoutMs = 4000) {
   if (coreReady) {

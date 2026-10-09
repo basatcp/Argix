@@ -1,59 +1,12 @@
-import { useId, useState } from 'react';
 import { BRAND, FAQS, FOOTER_COLUMNS } from '../../data/site';
+import { FAQAccordion } from '../FAQAccordion';
 import { Icon } from '../Icons';
 import { Logo } from '../Logo';
 import { SectionHeading } from '../ui';
 import { SectionBackground } from '../backgrounds/SectionBackground';
 
-/* SECTION 11: FAQ (accessible accordion) */
-function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean; onToggle: () => void }) {
-  const id = useId();
-  const btnId = `${id}-btn`;
-  const panelId = `${id}-panel`;
-  return (
-    <li className="border-b border-line last:border-b-0">
-      <h3>
-        <button
-          id={btnId}
-          type="button"
-          aria-expanded={open}
-          aria-controls={panelId}
-          onClick={onToggle}
-          className="flex w-full items-center justify-between gap-6 py-6 text-left text-[17px] font-medium text-text transition-colors hover:text-cyan md:text-[18px]"
-        >
-          {q}
-          <span
-            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition duration-300 ${
-              open ? 'rotate-180 border-electric/50 text-cyan' : 'border-line text-muted'
-            }`}
-            aria-hidden="true"
-          >
-            <Icon name="chevronDown" className="h-4 w-4" />
-          </span>
-        </button>
-      </h3>
-      <div
-        id={panelId}
-        role="region"
-        aria-labelledby={btnId}
-        className={`grid transition-[grid-template-rows,visibility] duration-300 ease-out ${open ? 'visible grid-rows-[1fr]' : 'invisible grid-rows-[0fr]'}`}
-      >
-        <div className="overflow-hidden">
-          <p
-            className={`max-w-[680px] pb-6 pr-12 text-[15.5px] leading-relaxed text-muted transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              open ? 'translate-y-0 opacity-100 delay-75' : '-translate-y-1 opacity-0'
-            }`}
-          >
-            {a}
-          </p>
-        </div>
-      </div>
-    </li>
-  );
-}
-
+/* SECTION 11: FAQ */
 export function Faq() {
-  const [open, setOpen] = useState<number | null>(0);
   return (
     <section id="faq" aria-labelledby="faq-title" className="section-pad relative isolate">
       <SectionBackground variant="minimal" />
@@ -66,12 +19,12 @@ export function Faq() {
               Ask an engineer directly.
             </a>
           </p>
+          <a data-reveal href="/faq" className="group mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-electric">
+            Browse all questions
+            <Icon name="arrowRight" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
         </div>
-        <ul data-reveal className="card px-6 md:px-8">
-          {FAQS.map((f, i) => (
-            <FaqItem key={f.q} q={f.q} a={f.a} open={open === i} onToggle={() => setOpen(open === i ? null : i)} />
-          ))}
-        </ul>
+        <FAQAccordion items={FAQS} />
       </div>
     </section>
   );
@@ -87,7 +40,7 @@ export function Footer() {
       </h2>
       <div className="container-site grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:py-16">
         <div className="max-w-[320px]">
-          <a href="#top" aria-label={`${BRAND.name} home`} className="inline-block rounded-md">
+          <a href="/" aria-label={`${BRAND.name} home`} className="inline-block rounded-md">
             <Logo />
           </a>
           <p className="mt-5 text-[14.5px] leading-relaxed text-muted">{BRAND.tagline}</p>

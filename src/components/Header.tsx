@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { BRAND, NAV } from '../data/site';
+import { useRouter } from '../router';
 import { useConsultation } from './consultation/ConsultationModal';
 import { Icon } from './Icons';
 import { Logo } from './Logo';
@@ -9,6 +10,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const { openConsultation } = useConsultation();
+  const { location } = useRouter();
+  const isCurrent = (href: string) => location.path === href;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -36,7 +39,7 @@ export function Header() {
       }`}
     >
       <div className="container-site flex h-[72px] items-center justify-between">
-        <a href="#top" className="rounded-md" aria-label={`${BRAND.name} home`}>
+        <a href="/" className="rounded-md" aria-label={`${BRAND.name} home`}>
           <Logo />
         </a>
 
@@ -46,9 +49,15 @@ export function Header() {
               <li key={item.href}>
                 <a
                   href={item.href}
-                  className="rounded-lg px-3.5 py-2 text-[14.5px] font-medium text-muted transition-colors hover:text-text"
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                  className={`relative rounded-lg px-3.5 py-2 text-[14.5px] font-medium transition-colors hover:text-text ${
+                    isCurrent(item.href) ? 'text-text' : 'text-muted'
+                  }`}
                 >
                   {item.label}
+                  {isCurrent(item.href) && (
+                    <span aria-hidden="true" className="absolute inset-x-3.5 -bottom-px h-px bg-gradient-to-r from-transparent via-cyan to-transparent" />
+                  )}
                 </a>
               </li>
             ))}
@@ -87,7 +96,8 @@ export function Header() {
                 <a
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-2 py-3 text-base font-medium text-text/90 hover:text-cyan"
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                  className={`block rounded-lg px-2 py-3 text-base font-medium hover:text-cyan ${isCurrent(item.href) ? 'text-cyan' : 'text-text/90'}`}
                 >
                   {item.label}
                 </a>

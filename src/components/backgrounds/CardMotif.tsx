@@ -170,7 +170,14 @@ const MOTIFS: Record<MotifKind, (p: { animate: boolean }) => JSX.Element> = {
  * site's background system. More present on card hover (backgrounds.css);
  * animations pause while the card is off screen and are omitted for reduced motion.
  */
-export function CardMotif({ kind }: { kind: MotifKind }) {
+export function CardMotif({
+  kind,
+  className = 'pointer-events-none absolute right-0 top-0 -z-10 h-[140px] w-[min(220px,58%)]',
+}: {
+  kind: MotifKind;
+  /** Size and position (default: top-right corner of an industry card). */
+  className?: string;
+}) {
   const ref = useRef<SVGSVGElement>(null);
   const env = readEnv();
   const animate = !env.reduced;
@@ -187,7 +194,7 @@ export function CardMotif({ kind }: { kind: MotifKind }) {
       ref={ref}
       aria-hidden="true"
       data-active="false"
-      className="card-motif pointer-events-none absolute right-0 top-0 -z-10 h-[140px] w-[min(220px,58%)]"
+      className={`card-motif ${className}`}
       viewBox={`0 0 ${W} ${H}`}
       preserveAspectRatio="xMaxYMin meet"
       fill="none"

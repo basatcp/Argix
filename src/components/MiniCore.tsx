@@ -1,4 +1,6 @@
+import { useEffect, useRef } from 'react';
 import type { CoreLayer } from '../data/site';
+import { observeVisibility } from './backgrounds/motion';
 
 /**
  * Simplified 2D Cyber Core, used to tie later sections back to the hero.
@@ -58,11 +60,21 @@ export function MiniCore({
   spin?: boolean;
   title?: string;
 }) {
+  const ref = useRef<SVGSVGElement>(null);
+  // Its rotations and pulses pause while it is off screen (index.css).
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    return observeVisibility(el, (visible) => {
+      el.dataset.active = String(visible);
+    });
+  }, []);
   const on = (l: CoreLayer) => lit.includes(l);
   const cls = (l: CoreLayer) => `mc-layer ${on(l) ? 'is-on' : ''} ${focus === l ? 'is-focus' : ''}`;
 
   return (
     <svg
+      ref={ref}
       viewBox="-104 -104 208 208"
       className={`mini-core ${className}`}
       role={title ? 'img' : undefined}

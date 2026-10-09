@@ -45,7 +45,20 @@ export function SectionBackground({
       section.querySelectorAll<HTMLElement>('[data-bg-anchor]').forEach((el) => {
         if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return; // hidden at this breakpoint
         const a = el.getBoundingClientRect();
-        const rect = { x: a.left - r.left, y: a.top - r.top, w: a.width, h: a.height, cx: a.left - r.left + a.width / 2, cy: a.top - r.top + a.height / 2 };
+        // Layout position: ignore translations still applied by scroll reveals (they settle later).
+        let dx = 0;
+        let dy = 0;
+        for (let n: Element | null = el; n && n !== section; n = n.parentElement) {
+          const t = getComputedStyle(n).transform;
+          if (t && t !== 'none') {
+            const m = new DOMMatrixReadOnly(t);
+            dx += m.m41;
+            dy += m.m42;
+          }
+        }
+        const x = a.left - r.left - dx;
+        const y = a.top - r.top - dy;
+        const rect = { x, y, w: a.width, h: a.height, cx: x + a.width / 2, cy: y + a.height / 2 };
         (anchors[el.dataset.bgAnchor!] ??= []).push(rect);
       });
       setBox((prev) => {

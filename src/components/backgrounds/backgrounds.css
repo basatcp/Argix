@@ -19,7 +19,8 @@
 
 /* Off-screen backgrounds stop all their animations. */
 .sbg[data-active='false'] *,
-.card-motif[data-active='false'] * {
+.card-motif[data-active='false'] *,
+.tech-diagram[data-active='false'] * {
   animation-play-state: paused !important;
 }
 
@@ -243,6 +244,33 @@
   stroke: rgba(186, 230, 253, 0.8);
 }
 
+/* Inner-page diagrams: lines draw in and groups fade in the first time they are on screen. */
+.tech-diagram .d-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+.tech-diagram .d-reveal {
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+.tech-diagram[data-entered='true'] .d-draw {
+  stroke-dashoffset: 0;
+}
+.tech-diagram[data-entered='true'] .d-reveal {
+  opacity: 1;
+}
+
+/* Testimonials: node activity rises slightly while a card is hovered or focused. */
+.bg-boost {
+  opacity: 0;
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+section:has(.t-card:hover) .bg-boost,
+section:has(.t-card:focus-within) .bg-boost {
+  opacity: 1;
+}
+
 /* Industry card motifs: quiet by default, a little more present on hover. */
 .card-motif {
   opacity: 0.55;
@@ -265,7 +293,8 @@
   /* Static backgrounds appear at once: no staggered fade-ins either. */
   .sbg *,
   .sbg > *,
-  .card-motif * {
+  .card-motif *,
+  .tech-diagram * {
     transition-delay: 0s !important;
     animation-delay: 0s !important;
   }

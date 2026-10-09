@@ -10,11 +10,11 @@ export const BRAND = {
 };
 
 export const NAV = [
-  { label: 'Services', href: '#services' },
-  { label: 'Industries', href: '#industries' },
-  { label: 'Process', href: '#process' },
-  { label: 'Security', href: '#security' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'Services', href: '/services' },
+  { label: 'Industries', href: '/industries' },
+  { label: 'Process', href: '/process' },
+  { label: 'Security', href: '/security' },
+  { label: 'FAQ', href: '/faq' },
 ];
 
 export const FRAMEWORKS = ['ISO/IEC 27001', 'SOC 2', 'HIPAA', 'PCI DSS', 'NIST CSF', 'OWASP Top 10', 'GDPR'];
@@ -51,51 +51,60 @@ export const PILLARS: Pillar[] = [
   },
 ];
 
-export const SERVICES: { title: string; text: string; icon: IconName; group: 'Build' | 'Run' | 'Secure' }[] = [
+/** Homepage service cards; `slug` is the service's anchor on the Services page. */
+export const SERVICES: { title: string; text: string; icon: IconName; group: 'Build' | 'Run' | 'Secure'; slug: string }[] = [
   {
     title: 'Custom Software Development',
+    slug: 'custom-software-development',
     text: 'Software designed around your business, from architecture and development through launch and support.',
     icon: 'code',
     group: 'Build',
   },
   {
     title: 'Web Application Development',
+    slug: 'web-application-development',
     text: 'Secure portals, dashboards and business systems designed for scalability.',
     icon: 'layout',
     group: 'Build',
   },
   {
     title: 'AI Solutions',
+    slug: 'ai-solutions',
     text: 'AI features, assistants, automation and document intelligence integrated into your software.',
     icon: 'chip',
     group: 'Build',
   },
   {
     title: 'DevOps & Cloud',
+    slug: 'devops-cloud',
     text: 'Secure CI/CD pipelines and cloud environments across Azure and AWS.',
     icon: 'cloud',
     group: 'Run',
   },
   {
     title: 'Penetration Testing',
+    slug: 'penetration-testing',
     text: 'Manual testing of web apps, APIs, mobile, networks and cloud environments.',
     icon: 'target',
     group: 'Secure',
   },
   {
     title: 'GRC & Compliance',
+    slug: 'grc-compliance',
     text: 'Readiness support for SOC 2, ISO 27001, HIPAA and PCI DSS.',
     icon: 'clipboard',
     group: 'Secure',
   },
   {
     title: 'SOC Monitoring',
+    slug: 'soc-monitoring',
     text: 'Monitoring, triage and escalation for security events.',
     icon: 'activity',
     group: 'Secure',
   },
   {
     title: 'vCISO',
+    slug: 'vciso',
     text: 'Fractional security leadership, risk strategy and compliance oversight.',
     icon: 'userShield',
     group: 'Secure',
@@ -110,12 +119,13 @@ export const STATS = [
   { value: 17, suffix: '+', label: 'Years Combined Leadership Experience' },
 ];
 
-export const INDUSTRIES: { title: string; text: string; icon: IconName }[] = [
-  { title: 'Healthcare', text: 'EHR systems, interoperability, healthcare AI and secure patient-facing platforms.', icon: 'heartPulse' },
-  { title: 'Enterprise & SaaS', text: 'Multi-tenant applications, enterprise systems, SSO and audit-ready architecture.', icon: 'building' },
-  { title: 'E-Commerce & Retail', text: 'Secure, high-performance stores, payments and integrations.', icon: 'cart' },
-  { title: 'Startups & MVPs', text: 'Secure first versions built quickly, with foundations that can scale.', icon: 'rocket' },
-  { title: 'Fintech', text: 'Payments, onboarding, financial platforms and regulated workflows.', icon: 'bank' },
+/** Homepage industry cards; `id` is the industry's section on the Industries page. */
+export const INDUSTRIES: { id: string; title: string; text: string; icon: IconName }[] = [
+  { id: 'healthcare', title: 'Healthcare', text: 'EHR systems, interoperability, healthcare AI and secure patient-facing platforms.', icon: 'heartPulse' },
+  { id: 'enterprise-saas', title: 'Enterprise & SaaS', text: 'Multi-tenant applications, enterprise systems, SSO and audit-ready architecture.', icon: 'building' },
+  { id: 'ecommerce-retail', title: 'E-Commerce & Retail', text: 'Secure, high-performance stores, payments and integrations.', icon: 'cart' },
+  { id: 'startups-mvps', title: 'Startups & MVPs', text: 'Secure first versions built quickly, with foundations that can scale.', icon: 'rocket' },
+  { id: 'fintech', title: 'Fintech', text: 'Payments, onboarding, financial platforms and regulated workflows.', icon: 'bank' },
 ];
 
 /** Layers of the mini core, lit cumulatively by the process timeline. */
@@ -232,33 +242,35 @@ export const FOOTER_COLUMNS = [
   {
     title: 'Build & Run',
     links: [
-      { label: 'Software Development', href: '#services' },
-      { label: 'Web Apps', href: '#services' },
-      { label: 'Mobile Apps', href: '#pillars' },
-      { label: 'AI Solutions', href: '#services' },
-      { label: 'DevOps', href: '#services' },
-      { label: 'Cloud', href: '#pillars' },
+      { label: 'Software Development', href: '/services#custom-software-development' },
+      { label: 'Web Apps', href: '/services#web-application-development' },
+      { label: 'Mobile Apps', href: '/services#mobile-app-development' },
+      { label: 'AI Solutions', href: '/services#ai-solutions' },
+      { label: 'DevOps', href: '/services#devops-cloud' },
+      { label: 'Cloud', href: '/services#devops-cloud' },
     ],
   },
   {
     title: 'Secure & Comply',
     links: [
-      { label: 'Cybersecurity', href: '#security' },
-      { label: 'Penetration Testing', href: '#services' },
-      { label: 'GRC', href: '#services' },
-      { label: 'SOC Monitoring', href: '#security' },
-      { label: 'vCISO', href: '#security' },
+      { label: 'Cybersecurity', href: '/security' },
+      { label: 'Penetration Testing', href: '/security#penetration-testing' },
+      { label: 'GRC', href: '/security#grc-compliance' },
+      { label: 'SOC Monitoring', href: '/security#soc-monitoring' },
+      { label: 'vCISO', href: '/security#vciso' },
     ],
   },
   {
     title: 'Company',
     links: [
-      { label: 'About', href: '#pillars' },
-      { label: 'Industries', href: '#industries' },
-      { label: 'Certifications', href: '#certifications' },
+      { label: 'About', href: '/#pillars' },
+      { label: 'Industries', href: '/industries' },
+      { label: 'Process', href: '/process' },
+      { label: 'Certifications', href: '/#certifications' },
+      { label: 'FAQ', href: '/faq' },
       // TODO: Point to the blog once it exists.
       { label: 'Blog', href: '#' },
-      { label: 'Contact', href: '#contact' },
+      { label: 'Contact', href: '/#contact' },
     ],
   },
 ];
