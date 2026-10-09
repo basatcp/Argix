@@ -19,7 +19,7 @@ const COLS = 'md:grid-cols-[minmax(0,230px)_minmax(0,1fr)] lg:grid-cols-[minmax(
  */
 export function GrcCompliance() {
   return (
-    <PageSection id="grc-compliance" labelledBy="grc-title" tone="raised" background="blueprint" className="lg:!scroll-mt-[60px]">
+    <PageSection id="grc-compliance" labelledBy="grc-title" tone="raised" background="blueprint" className="scroll-mt-[134px] lg:scroll-mt-[60px]">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
         <SecurityIntro id="grc-title" eyebrow={GRC.eyebrow} title={GRC.title} lead={GRC.lead} />
         <div>

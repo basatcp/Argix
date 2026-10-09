@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { Diagram, DrawPath, Hex, INK, Pulse, RingPulse, Spin, arc, polar } from '../page/Diagram';
+import { Diagram, DrawPath, Hex, INK, Pulse, RingPulse, Spin, arc, circlePath, polar, tickRing } from '../page/Diagram';
 import { hexagon, toD, type Pt } from '../backgrounds/geometry';
 
 /**
@@ -34,13 +34,7 @@ function flashStyle(k: number): CSSProperties {
 }
 
 // Six tick marks per stage segment on the outer ring, longer at the stages.
-const TICKS = Array.from({ length: 72 }, (_, i) => {
-  const a = -90 + i * 5;
-  const major = i % 12 === 0;
-  const p0 = polar(C, R_OUTER - (major ? 10 : 4), a);
-  const p1 = polar(C, R_OUTER, a);
-  return `M${p0[0].toFixed(1)} ${p0[1].toFixed(1)}L${p1[0].toFixed(1)} ${p1[1].toFixed(1)}`;
-}).join('');
+const TICKS = tickRing(C, { count: 72, r0: R_OUTER - 4, r1: R_OUTER, majorEvery: 12, majorR0: R_OUTER - 10, start: -90 });
 
 export function ProcessHeroDiagram() {
   return (
@@ -69,7 +63,7 @@ export function ProcessHeroDiagram() {
           )}
 
           {/* Secure track: dashed, just inside the stage ring */}
-          <DrawPath d={`M${C[0]} ${C[1] - R_TRACK}A${R_TRACK} ${R_TRACK} 0 1 1 ${C[0] - 0.01} ${C[1] - R_TRACK}`} stroke={INK.faint} dash="2 6" delay={0.5} />
+          <DrawPath d={circlePath(C, R_TRACK)} stroke={INK.faint} dash="2 6" delay={0.5} />
 
           {/* Stage ring: one arc per stage-to-stage segment, drawn in order */}
           {Array.from({ length: STAGES }, (_, k) => (

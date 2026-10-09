@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { hexagon, lengthOf, toD, type Pt } from '../backgrounds/geometry';
-import { DrawPath, Diagram, Dot, Hex, INK, Module, Pulse, Spin, arc, polar } from '../page/Diagram';
+import { DrawPath, Diagram, Dot, Hex, INK, Module, Pulse, Spin, arc, circlePath, polar, tickRing } from '../page/Diagram';
 
 /**
  * Security hero visual: a defended core. Nested hexagonal boundaries and
@@ -44,17 +44,6 @@ const MAP_LINKS: [number, number][] = [
   [6, 7],
   [7, 8],
 ];
-
-const circleD = (r: number) => `M${C[0] - r} ${C[1]}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
-
-function ticks(r0: number, r1: number, long: number, n: number) {
-  return Array.from({ length: n }, (_, i) => {
-    const a = (i / n) * 360;
-    const [x0, y0] = polar(C, i % 6 === 0 ? long : r0, a);
-    const [x1, y1] = polar(C, r1, a);
-    return `M${x0.toFixed(1)} ${y0.toFixed(1)}L${x1.toFixed(1)} ${y1.toFixed(1)}`;
-  }).join('');
-}
 
 /** Short mark across a spoke at radius r (perpendicular to it). */
 function gate(a: number, r: number, half = 4) {
@@ -118,11 +107,11 @@ export function SecurityHeroDiagram() {
 
           {/* Concentric rings and the tick ring */}
           <g className="d-reveal" style={{ ['--d' as string]: '0.3s' } as CSSProperties}>
-            <path d={ticks(163, 168, 158, 72)} stroke={INK.line} strokeWidth={1} />
+            <path d={tickRing(C, { count: 72, r0: 163, r1: 168, majorEvery: 6, majorR0: 158 })} stroke={INK.line} strokeWidth={1} />
             <circle cx={C[0]} cy={C[1]} r={118} stroke={INK.faint} strokeWidth={1} strokeDasharray="2 6" />
           </g>
-          <DrawPath d={circleD(150)} stroke={INK.line} delay={0.25} />
-          <DrawPath d={circleD(86)} stroke={INK.line} delay={0.45} />
+          <DrawPath d={circlePath(C, 150)} stroke={INK.line} delay={0.25} />
+          <DrawPath d={circlePath(C, 86)} stroke={INK.line} delay={0.45} />
 
           {/* Spokes from the perimeter sensors to the inner boundary, with a gate at every ring */}
           {spokes.map((pts, i) => (

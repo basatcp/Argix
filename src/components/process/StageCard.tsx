@@ -1,4 +1,5 @@
-import { pad, type ProcessStage } from '../../data/process';
+import { pad2 } from '../../lib/format';
+import type { ProcessStage } from '../../data/process';
 import { hexagon } from '../backgrounds/geometry';
 import { Icon } from '../Icons';
 
@@ -88,8 +89,8 @@ export function StageCard({ stage, index, total, state }: { stage: ProcessStage;
           </span>
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">
-              <span className={`transition-colors duration-500 ${lit ? 'text-electric' : ''}`}>Stage {pad(index + 1)}</span>
-              <span aria-hidden="true"> / {pad(total)}</span>
+              <span className={`transition-colors duration-500 ${lit ? 'text-electric' : ''}`}>Stage {pad2(index + 1)}</span>
+              <span aria-hidden="true"> / {pad2(total)}</span>
             </p>
             <h3 id={titleId} className="mt-1.5 text-[20px] font-semibold leading-snug tracking-[-0.015em] text-text md:text-[24px]">
               {stage.title}

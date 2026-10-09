@@ -1,6 +1,7 @@
+import { isPlainClick } from '../../router';
+import { pad2 } from '../../lib/format';
 import type { FaqGroup } from '../../data/faq';
 import { ConsultButton } from '../page/ConsultButton';
-import { groupNumber } from './meta';
 import { useActiveSection } from '../../hooks/useActiveSection';
 
 /** Hexagonal rail node: a quiet outline, with a lit layer cross-faded in (opacity only). */
@@ -60,7 +61,7 @@ export function FaqCategoryNav({ groups }: { groups: FaqGroup[] }) {
                     href={`#${g.id}`}
                     aria-current={current ? 'true' : undefined}
                     onClick={(e) => {
-                      if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) select(g.id);
+                      if (isPlainClick(e)) select(g.id);
                     }}
                     className="group relative flex min-h-[64px] flex-col-reverse justify-center py-3 pl-10 pr-2"
                   >
@@ -77,7 +78,7 @@ export function FaqCategoryNav({ groups }: { groups: FaqGroup[] }) {
                       aria-hidden="true"
                       className={`text-[12px] font-semibold tracking-[0.14em] transition-colors duration-300 ${current ? 'text-cyan' : 'text-muted'}`}
                     >
-                      {groupNumber(i)}
+                      {pad2(i + 1)}
                     </span>
                   </a>
                 </li>

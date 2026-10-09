@@ -267,7 +267,7 @@ export { CERTIFICATION_NOTE as COMPLIANCE_NOTE } from './security';
 export const INTEGRATED_INTRO = {
   eyebrow: 'Integrated approach',
   title: 'Development and Security Should Not Be Separate',
-  lead: 'The team that builds your system also tests, deploys and monitors it, so what we learn in production goes straight back into the next release.',
+  lead: 'One engagement covers building, testing, deploying and monitoring your system, so what we learn in production goes straight back into the next release.',
 };
 
 export interface FlowStage {

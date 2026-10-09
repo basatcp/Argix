@@ -79,7 +79,3 @@ export const NOT_FOUND_META = {
 export function routeByPath(path: string): RouteMeta | undefined {
   return ROUTES.find((r) => r.path === path);
 }
-
-export function routeByKey(key: PageKey): RouteMeta {
-  return ROUTES.find((r) => r.key === key)!;
-}

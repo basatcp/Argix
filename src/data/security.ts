@@ -39,7 +39,7 @@ export const SECURITY_HERO = {
  * same everywhere. HIPAA and the NIST CSF have no official certification.
  */
 export const CERTIFICATION_NOTE =
-  'SOC 2 reports and ISO 27001 certificates are issued by independent auditors and accredited certification bodies. HIPAA and the NIST CSF have no official certification. Our role is readiness, remediation and evidence preparation.';
+  'SOC 2 reports are issued by independent auditors, ISO 27001 certificates by accredited certification bodies and PCI DSS assessments by Qualified Security Assessors. HIPAA and the NIST CSF have no official certification. Our role is readiness, remediation and evidence preparation.';
 
 type Item = { title: string; text: string };
 type IconItem = Item & { icon: IconName };
@@ -108,7 +108,7 @@ export const GRC = {
       name: 'GDPR',
       kind: 'Readiness',
       scope: 'Personal data protection',
-      text: 'Map personal data and strengthen the security of processing, working alongside your legal or privacy advisers.',
+      text: 'Map personal data and strengthen the security of processing, working alongside your legal or privacy advisors.',
     },
   ],
   supportTitle: 'Readiness support covers',

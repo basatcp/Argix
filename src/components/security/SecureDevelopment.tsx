@@ -12,7 +12,7 @@ import { SecurityIntro } from './SecurityIntro';
  */
 export function SecureDevelopment() {
   return (
-    <PageSection id="secure-development" labelledBy="secure-dev-title" tone="raised" background="split" className="lg:!scroll-mt-[60px]">
+    <PageSection id="secure-development" labelledBy="secure-dev-title" tone="raised" background="split" className="scroll-mt-[134px] lg:scroll-mt-[60px]">
       {/* Split header: the heading on the left, the lead and the process link on the right. */}
       <div className="grid gap-5 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
         <SecurityIntro id="secure-dev-title" eyebrow={SECURE_DEV.eyebrow} title={SECURE_DEV.title} />

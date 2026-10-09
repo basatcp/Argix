@@ -68,7 +68,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         id: 'ongoing-monitoring',
         q: 'Can you provide ongoing monitoring?',
-        a: 'Yes. SOC monitoring covers continuous monitoring, triage and escalation of security events, with incident response support when an event needs action.',
+        a: 'Yes. SOC monitoring covers monitoring, triage and escalation of security events, with coverage agreed during onboarding and incident response support when an event needs action.',
       },
     ],
   },

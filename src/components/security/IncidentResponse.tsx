@@ -1,3 +1,4 @@
+import { pad2 } from '../../lib/format';
 import { useState, type CSSProperties } from 'react';
 import { IR } from '../../data/security';
 import { hexagon, toD, type Pt } from '../backgrounds/geometry';
@@ -28,7 +29,6 @@ function arrowHead(deg: number) {
   return toD([wing(1), tip, wing(-1)]);
 }
 
-const num = (i: number) => String(i + 1).padStart(2, '0');
 
 /**
  * The response lifecycle as a closed ring: five numbered phase nodes, arcs
@@ -107,7 +107,7 @@ function IncidentCycle({ hover }: { hover: number | null }) {
                 fontWeight={600}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
               >
-                {num(i)}
+                {pad2(i + 1)}
               </text>
             </g>
           ))}
@@ -129,7 +129,7 @@ function PhaseMark({ i }: { i: number }) {
           className="text-electric/60 transition-colors duration-300 group-hover:text-cyan"
         />
       </svg>
-      <span className="relative text-[11px] font-semibold tabular-nums text-cyan">{num(i)}</span>
+      <span className="relative text-[11px] font-semibold tabular-nums text-cyan">{pad2(i + 1)}</span>
     </span>
   );
 }
@@ -156,7 +156,7 @@ export function IncidentResponse() {
   const [hover, setHover] = useState<number | null>(null);
 
   return (
-    <PageSection id="incident-response" labelledBy="ir-title" background="timeline" className="lg:!scroll-mt-[60px]">
+    <PageSection id="incident-response" labelledBy="ir-title" background="timeline" className="scroll-mt-[134px] lg:scroll-mt-[60px]">
       <SecurityIntro id="ir-title" eyebrow={IR.eyebrow} title={IR.title} lead={IR.lead} align="center" />
 
       <div className="mt-12 lg:mt-16 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,320px)_minmax(0,1fr)] lg:grid-rows-[auto_1fr_1fr] lg:gap-x-10 lg:gap-y-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,380px)_minmax(0,1fr)] xl:gap-x-14">

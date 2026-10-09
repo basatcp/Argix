@@ -1,3 +1,4 @@
+import { pad2 } from '../../lib/format';
 import type { ReactNode } from 'react';
 import type { Industry } from '../../data/industries';
 import { Icon, type IconName } from '../Icons';
@@ -36,16 +37,15 @@ export function IndustrySection({
   scrim?: boolean;
 }) {
   const titleId = `${industry.id}-title`;
-  const num = String(index + 1).padStart(2, '0');
+  const num = pad2(index + 1);
   return (
-    // scroll-mt clears the 72px header plus the sticky industry navigation (61px below xl, 57px at xl;
-    // important: the base section[id] rule is more specific than a utility).
+    // scroll-mt clears the 72px header plus the sticky sub-navigation (61px below xl, 57px at xl).
     <PageSection
       id={industry.id}
       labelledBy={titleId}
       tone={tone}
       background={background}
-      className="!scroll-mt-[134px] lg:py-24 xl:!scroll-mt-[130px]"
+      className="scroll-mt-[134px] lg:py-24 xl:scroll-mt-[130px]"
     >
       <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div className={`relative z-[1] ${flip ? 'lg:order-2' : ''}`}>
@@ -65,7 +65,7 @@ export function IndustrySection({
                 /
               </span>
               <span className="sr-only"> of </span>
-              {String(total).padStart(2, '0')}
+              {pad2(total)}
             </p>
           </div>
           <h2 id={titleId} data-reveal className="h-section mt-6 md:mt-7">
@@ -100,7 +100,7 @@ export function IndustrySection({
               <IndustryVisual kind={industry.motif} />
             </div>
             <div className="relative border-t border-line bg-ink-950/40 px-5 py-4 md:px-6">
-              <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Standards and regulations</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Standards that commonly apply</h3>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {industry.frameworks.map((f) => (
                   <li key={f} className="rounded-lg border border-line px-3 py-1.5 text-[13px] font-medium tracking-wide text-[#C9D3E0]">

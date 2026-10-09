@@ -10,7 +10,6 @@ export const GROUP_ICONS: Record<string, IconName> = {
 };
 
 /** "01", "02", … */
-export const groupNumber = (i: number) => String(i + 1).padStart(2, '0');
 
 export const questionCount = (n: number) => `${n} question${n === 1 ? '' : 's'}`;
 

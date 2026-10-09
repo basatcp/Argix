@@ -1,6 +1,7 @@
+import { pad2 } from '../../lib/format';
 import type { FaqGroup } from '../../data/faq';
 import { Icon } from '../Icons';
-import { GROUP_ICONS, groupNumber, questionCount } from './meta';
+import { GROUP_ICONS, questionCount } from './meta';
 
 /**
  * Rounds the cells on the panel's bottom corners (inner radius 19px), so the
@@ -52,7 +53,7 @@ export function FaqTopicIndex({ groups }: { groups: FaqGroup[] }) {
                 <span className="block text-[16px] font-medium tracking-[-0.005em] text-text">{g.title}</span>
                 <span className="mt-0.5 block text-[13px] text-muted">
                   <span aria-hidden="true" className="font-semibold tracking-[0.08em] text-cyan">
-                    {groupNumber(i)}
+                    {pad2(i + 1)}
                   </span>
                   <span aria-hidden="true" className="mx-2 text-muted/60">
                     /

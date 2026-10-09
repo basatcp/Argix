@@ -55,7 +55,7 @@ export const INDUSTRY_DETAILS: Industry[] = [
     icon: 'heartPulse',
     motif: 'healthcare',
     challenge:
-      'Healthcare platforms hold some of the most sensitive data there is. They have to exchange records between systems that were never built to work together and stay available when care teams depend on them. HIPAA safeguards and audits apply from the first release.',
+      'Healthcare platforms hold some of the most sensitive data there is. They have to exchange records between systems that were never built to work together and stay available when care teams depend on them. When a platform handles protected health information, HIPAA safeguards apply from the first release.',
     build: [
       'Patient portals and telehealth platforms',
       'EHR and EMR integrations using HL7 and FHIR',
@@ -152,7 +152,7 @@ export const INDUSTRY_DETAILS: Industry[] = [
     build: [
       'MVPs and first production releases',
       'Web and mobile applications',
-      'Cloud foundations with infrastructure as code',
+      'Cloud foundations with Infrastructure as Code',
       'AI features and prototypes',
       'Internal admin tools and dashboards',
     ],

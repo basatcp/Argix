@@ -1,7 +1,8 @@
+import { pad2 } from '../../lib/format';
 import type { FaqGroup } from '../../data/faq';
 import { FAQAccordion } from '../FAQAccordion';
 import { Icon } from '../Icons';
-import { GROUP_ICONS, groupNumber } from './meta';
+import { GROUP_ICONS } from './meta';
 
 /**
  * One FAQ category: a decorative index line (icon, number, drawn rule), the
@@ -31,12 +32,12 @@ export function FaqGroupSection({
 }) {
   const titleId = `${group.id}-title`;
   return (
-    <section id={group.id} tabIndex={-1} aria-labelledby={titleId} className="!scroll-mt-28 focus:outline-none">
+    <section id={group.id} tabIndex={-1} aria-labelledby={titleId} className="scroll-mt-28 focus:outline-none">
       <div data-reveal aria-hidden="true" className="flex items-center gap-4">
         <span className="icon-tile">
           <Icon name={GROUP_ICONS[group.id] ?? 'fileText'} className="h-5 w-5" />
         </span>
-        <span className="text-xs font-semibold tracking-[0.16em] text-cyan">{groupNumber(index)}</span>
+        <span className="text-xs font-semibold tracking-[0.16em] text-cyan">{pad2(index + 1)}</span>
         <span data-draw className="h-px min-w-6 flex-1 origin-left bg-line" />
       </div>
       <h2 id={titleId} data-reveal className="mt-7 text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-text md:text-[34px]">

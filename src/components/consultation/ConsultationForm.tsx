@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useRef, type ReactNode } from 'react';
 import { CONTACT_METHODS, PROJECT_STAGES, REQUIREMENTS_MIN, SERVICES, type FieldName } from '../../consultation/schema';
 import { useConsultationForm, type FormLocation } from '../../consultation/useConsultationForm';
 import { Icon } from '../Icons';
+import { useRouter } from '../../router';
 
 export interface ConsultationFormProps {
   variant: FormLocation;
@@ -20,6 +21,7 @@ export function ConsultationForm({ variant, onClose, onSuccessChange }: Consulta
   const uid = useId();
   const fieldId = useCallback((name: FieldName) => `${uid}-${name}`, [uid]);
   const form = useConsultationForm(variant, fieldId);
+  const { navigate } = useRouter();
   const { values, errors, status } = form;
   const successRef = useRef<HTMLHeadingElement>(null);
   const large = variant === 'section';
@@ -53,10 +55,8 @@ export function ConsultationForm({ variant, onClose, onSuccessChange }: Consulta
                 className="btn-secondary"
                 onClick={() => {
                   onClose?.();
-                  window.setTimeout(() => {
-                    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                    document.getElementById('services')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-                  }, 320);
+                  // After the popup has closed (the page is interactive again), open the Services page.
+                  window.setTimeout(() => navigate('/services'), 320);
                 }}
               >
                 Explore Our Services
@@ -245,7 +245,7 @@ export function ConsultationForm({ variant, onClose, onSuccessChange }: Consulta
           )}
         </button>
         <p className="mt-4 max-w-[560px] text-[12.5px] leading-relaxed text-muted">
-          By submitting this form, you agree that our team may contact you regarding your enquiry.
+          By submitting this form, you agree that our team may contact you regarding your inquiry.
         </p>
       </div>
       <p className="sr-only" aria-live="polite">

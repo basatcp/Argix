@@ -11,7 +11,7 @@ import { SecurityIntro } from './SecurityIntro';
  */
 export function VirtualCiso() {
   return (
-    <PageSection id="vciso" labelledBy="vciso-title" background="minimal" className="lg:!scroll-mt-[60px]">
+    <PageSection id="vciso" labelledBy="vciso-title" background="minimal" className="scroll-mt-[134px] lg:scroll-mt-[60px]">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 xl:gap-20">
         <div className="lg:sticky lg:top-44 lg:self-start">
           <SecurityIntro id="vciso-title" eyebrow={VCISO.eyebrow} title={VCISO.title} lead={VCISO.lead} />

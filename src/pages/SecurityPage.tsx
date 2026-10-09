@@ -1,12 +1,12 @@
 import { SECURITY_CTA, SECURITY_HERO, SECURITY_SECTIONS } from '../data/security';
 import { FinalCTA } from '../components/page/FinalCTA';
 import { PageHero } from '../components/page/PageHero';
+import { SubNav } from '../components/page/SubNav';
 import { GrcCompliance } from '../components/security/GrcCompliance';
 import { IncidentResponse } from '../components/security/IncidentResponse';
 import { PenetrationTesting } from '../components/security/PenetrationTesting';
 import { SecureDevelopment } from '../components/security/SecureDevelopment';
 import { SecurityHeroDiagram } from '../components/security/SecurityHeroDiagram';
-import { SecuritySubNav } from '../components/security/SecuritySubNav';
 import { SocMonitoring } from '../components/security/SocMonitoring';
 import { VirtualCiso } from '../components/security/VirtualCiso';
 
@@ -35,7 +35,7 @@ export function SecurityPage() {
 
       {/* The sub-navigation sticks only while these sections are on screen. */}
       <div className="relative">
-        <SecuritySubNav items={SECURITY_SECTIONS} />
+        <SubNav label="Security services" items={SECURITY_SECTIONS} />
         <PenetrationTesting />
         <GrcCompliance />
         <VirtualCiso />

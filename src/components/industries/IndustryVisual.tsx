@@ -421,12 +421,12 @@ const MOTIFS: Record<MotifKind, (p: MotifProps) => JSX.Element> = {
   fintech: Fintech,
 };
 
-export function IndustryVisual({ kind, className = '' }: { kind: MotifKind; className?: string }) {
+export function IndustryVisual({ kind }: { kind: MotifKind }) {
   const Motif = MOTIFS[kind];
   // Phones: one pulse per diagram, no rotating or expanding rings.
   const [rich] = useState(() => readEnv().tier !== 'mobile');
   return (
-    <Diagram w={W} h={H} className={className}>
+    <Diagram w={W} h={H}>
       {(animate) => <Motif animate={animate} rich={rich} />}
     </Diagram>
   );

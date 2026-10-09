@@ -1,3 +1,4 @@
+import { pad2 } from '../../lib/format';
 import { SOC } from '../../data/security';
 import { Icon } from '../Icons';
 import { Diagram, INK, Pulse } from '../page/Diagram';
@@ -42,7 +43,7 @@ function FlowLine() {
  */
 export function SocMonitoring() {
   return (
-    <PageSection id="soc-monitoring" labelledBy="soc-title" tone="raised" background="monitor" className="lg:!scroll-mt-[60px]">
+    <PageSection id="soc-monitoring" labelledBy="soc-title" tone="raised" background="monitor" className="scroll-mt-[134px] lg:scroll-mt-[60px]">
       <SecurityIntro id="soc-title" eyebrow={SOC.eyebrow} title={SOC.title} lead={SOC.lead} align="center" />
 
       <div className="relative mt-12 overflow-hidden rounded-[28px] border border-[rgba(100,180,255,0.16)] bg-ink-950/60 px-5 py-8 shadow-[0_40px_100px_-50px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-sm sm:px-8 md:px-10 md:py-12 lg:mt-16 lg:px-12 lg:py-14">
@@ -66,7 +67,7 @@ export function SocMonitoring() {
                     <Icon name={s.icon} className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
                   </span>
                   <p aria-hidden="true" className="pt-0.5 text-[11px] font-semibold uppercase tabular-nums tracking-[0.16em] text-electric lg:mt-6 lg:pt-0">
-                    {String(i + 1).padStart(2, '0')}
+                    {pad2(i + 1)}
                   </p>
                   <h3 className="mt-1.5 text-[18px] font-semibold tracking-[-0.01em] text-text">{s.title}</h3>
                   <p className="mt-2 text-[14.5px] leading-relaxed text-muted lg:max-w-[220px]">{s.text}</p>

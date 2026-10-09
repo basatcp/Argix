@@ -1,9 +1,9 @@
+import { pad2 } from '../../lib/format';
 import { useEffect, useId, useState } from 'react';
 import type { BuildService } from '../../data/services';
 import { useRouter } from '../../router';
 import { Icon } from '../Icons';
 import { ConsultButton } from '../page/ConsultButton';
-import { pad } from './format';
 
 /**
  * One Build & Run service as an index row on a hairline: number and icon, title,
@@ -41,7 +41,7 @@ export function ServiceCard({ service, index, active = false }: { service: Build
             aria-hidden="true"
             className={`text-xs font-semibold tabular-nums tracking-[0.16em] transition-colors duration-500 lg:pl-0.5 ${active ? 'text-cyan' : 'text-muted'}`}
           >
-            {pad(index + 1)}
+            {pad2(index + 1)}
           </span>
         </div>
 

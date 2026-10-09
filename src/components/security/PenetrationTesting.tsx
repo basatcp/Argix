@@ -1,3 +1,4 @@
+import { pad2 } from '../../lib/format';
 import { PENTEST } from '../../data/security';
 import { Icon } from '../Icons';
 import { ConsultButton } from '../page/ConsultButton';
@@ -10,7 +11,7 @@ import { SecurityIntro } from './SecurityIntro';
  */
 export function PenetrationTesting() {
   return (
-    <PageSection id="penetration-testing" labelledBy="pentest-title" background="secure" className="lg:!scroll-mt-[60px]">
+    <PageSection id="penetration-testing" labelledBy="pentest-title" background="secure" className="scroll-mt-[134px] lg:scroll-mt-[60px]">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 xl:gap-20">
         <div>
           <SecurityIntro id="pentest-title" eyebrow={PENTEST.eyebrow} title={PENTEST.title} lead={PENTEST.lead} />
@@ -73,7 +74,7 @@ export function PenetrationTesting() {
                   aria-hidden="true"
                   className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-xl border border-electric/50 bg-ink-800 text-sm font-semibold tabular-nums text-cyan shadow-[0_0_0_4px_rgba(30,167,255,0.07)] md:relative"
                 >
-                  {String(i + 1).padStart(2, '0')}
+                  {pad2(i + 1)}
                 </span>
                 <p className="pt-2 text-[18px] font-semibold tracking-[-0.01em] text-text md:mt-5 md:pt-0">
                   <span className="sr-only">Step {i + 1}: </span>

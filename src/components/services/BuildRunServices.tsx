@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { pad2 } from '../../lib/format';
+import { useActiveSection } from '../../hooks/useActiveSection';
 import { BUILD_RUN, BUILD_RUN_INTRO } from '../../data/services';
 import { Icon } from '../Icons';
 import { SectionHeading } from '../ui';
-import { pad } from './format';
 import { ServiceCard } from './ServiceCard';
 
 /** Compact jump index of the Build & Run services. */
@@ -17,7 +17,7 @@ function ServiceIndex() {
               href={`#${s.slug}`}
               className="group flex min-h-[44px] items-center gap-3.5 rounded-xl px-3 lg:min-h-[40px] text-[14.5px] text-[#C9D3E0] transition-colors duration-300 hover:bg-white/[0.03] hover:text-text"
             >
-              <span className="w-5 text-xs font-semibold tabular-nums text-muted transition-colors duration-300 group-hover:text-cyan">{pad(i + 1)}</span>
+              <span className="w-5 text-xs font-semibold tabular-nums text-muted transition-colors duration-300 group-hover:text-cyan">{pad2(i + 1)}</span>
               <span className="flex-1">{s.title}</span>
               <Icon
                 name="arrowRight"
@@ -36,23 +36,11 @@ function ServiceIndex() {
  * service. The row crossing the middle of the viewport is "active" and lights up.
  */
 export function BuildRunServices() {
-  const listRef = useRef<HTMLOListElement>(null);
-  const [active, setActive] = useState(-1);
-
-  useEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.row));
-        });
-      },
-      { rootMargin: '-46% 0px -46% 0px' },
-    );
-    list.querySelectorAll('[data-row]').forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
+  // The row crossing the middle of the viewport (none above or below the list).
+  const { active } = useActiveSection(
+    BUILD_RUN.map((s) => s.slug),
+    { line: 0.5 },
+  );
 
   return (
     <>
@@ -66,10 +54,10 @@ export function BuildRunServices() {
 
       <div className="relative mt-12 md:mt-14 lg:mt-16">
         {/* data-bg-anchor="lane": the section's build flows run along each row's divider, never through its text */}
-        <ol ref={listRef} className="border-b border-line">
+        <ol className="border-b border-line">
           {BUILD_RUN.map((s, i) => (
-            <li key={s.slug} data-row={i} data-reveal data-bg-anchor="lane">
-              <ServiceCard service={s} index={i} active={active === i} />
+            <li key={s.slug} data-reveal data-bg-anchor="lane">
+              <ServiceCard service={s} index={i} active={active === s.slug} />
             </li>
           ))}
         </ol>

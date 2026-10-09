@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { hexagon, type Pt } from '../backgrounds/geometry';
-import { Diagram, DrawPath, Dot, Hex, INK, Pulse, RingPulse, Spin, arc, polar } from '../page/Diagram';
+import { Diagram, DrawPath, Dot, Hex, INK, Pulse, RingPulse, Spin, arc, circlePath, polar, tickRing } from '../page/Diagram';
 
 /**
  * Services hero visual: modular build blocks on the left (development) hand
@@ -33,8 +33,6 @@ const BUS_X = 12;
 
 const laneEnd = (y: number): Pt => [S[0] - Math.sqrt(R2 * R2 - (y - S[1]) ** 2), y];
 
-const circleD = (c: Pt, r: number) => `M${c[0] - r} ${c[1]}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
-
 function Block({ x0, x1, y, lit, delay }: { x0: number; x1: number; y: number; lit: boolean; delay: number }) {
   const w = x1 - x0;
   const top = y - BLOCK_H / 2;
@@ -58,13 +56,7 @@ function Block({ x0, x1, y, lit, delay }: { x0: number; x1: number; y: number; l
 }
 
 export function ServicesHeroDiagram() {
-  const ticks = Array.from({ length: 36 }, (_, i) => {
-    const a = i * 10;
-    const r0 = i % 3 === 0 ? R1 - 7 : R1 - 4;
-    const [x0, y0] = polar(S, r0, a);
-    const [x1, y1] = polar(S, R1, a);
-    return `M${x0.toFixed(1)} ${y0.toFixed(1)}L${x1.toFixed(1)} ${y1.toFixed(1)}`;
-  }).join('');
+  const ticks = tickRing(S, { count: 36, r0: R1 - 4, r1: R1, majorEvery: 3, majorR0: R1 - 7 });
   const outerHex = 136;
   const outerRight = S[0] + outerHex * Math.cos(Math.PI / 6);
   const cells: Pt[] = [
@@ -135,10 +127,10 @@ export function ServicesHeroDiagram() {
             </g>
           ))}
           <DrawPath d={hexagon(S[0], S[1], BOUND)} stroke={INK.line} delay={0.85} />
-          <DrawPath d={circleD(S, R1)} stroke={INK.line} delay={0.95} />
+          <DrawPath d={circlePath(S, R1)} stroke={INK.line} delay={0.95} />
           <path d={ticks} stroke={INK.line} strokeWidth={1} className="d-reveal" style={{ ['--d' as string]: '1.15s' } as CSSProperties} />
-          <DrawPath d={circleD(S, R2)} stroke={INK.line} delay={1.05} dash="2 5" />
-          <DrawPath d={circleD(S, R3)} stroke={INK.strong} delay={1.15} />
+          <DrawPath d={circlePath(S, R2)} stroke={INK.line} delay={1.05} dash="2 5" />
+          <DrawPath d={circlePath(S, R3)} stroke={INK.strong} delay={1.15} />
 
           {/* gates where the flows cross the boundary */}
           {LANES.map((y) => (

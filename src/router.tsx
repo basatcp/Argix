@@ -54,6 +54,11 @@ function fromWindow(key: number, restoreY?: number): Location {
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** A plain primary click (no modifier keys): the kind the app handles itself instead of the browser. */
+export function isPlainClick(e: { button: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; altKey: boolean }) {
+  return e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+}
+
 /**
  * Scroll to the element a #hash names (smoothly unless reduced motion) and move
  * keyboard focus with it, so Tab continues from where the reader landed.
@@ -143,7 +148,7 @@ export function RouterProvider({ children }: { children: ReactNode }) {
   // Turn same-origin link clicks into in-app navigation.
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (e.defaultPrevented || !isPlainClick(e)) return;
       const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
       if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
       const href = a.getAttribute('href') ?? '';

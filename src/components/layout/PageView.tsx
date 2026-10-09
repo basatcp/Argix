@@ -13,13 +13,41 @@ import { Footer } from '../sections/Closing';
 const OUT_MS = 160;
 const IN_MS = 340;
 
+/** A known page whose code couldn't be fetched (offline, or an old cached HTML after a deploy). */
+function PageLoadFailed() {
+  return (
+    <section aria-labelledby="load-failed-title" className="page-hero relative isolate pb-24 pt-36 md:pb-32 md:pt-44">
+      <div aria-hidden="true" className="grid-bg absolute inset-0 -z-10 opacity-40" />
+      <div className="container-site max-w-[760px]">
+        <p className="eyebrow">
+          <span className="h-px w-6 bg-cyan" aria-hidden="true" />
+          Connection problem
+        </p>
+        <h1 id="load-failed-title" tabIndex={-1} className="mt-5 text-[38px] font-semibold leading-[1.06] tracking-[-0.032em] text-text sm:text-[46px]">
+          This Page Couldn’t Load
+        </h1>
+        <p className="lead mt-6">Its content didn’t arrive, usually because the connection dropped. Reload to try again.</p>
+        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+          <button type="button" onClick={() => window.location.reload()} className="btn-primary">
+            Reload the Page
+          </button>
+          <a href="/" className="btn-secondary">
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /** One page with its own scroll reveals (set up after the page's content has mounted). */
 function Page({ path }: { path: string }) {
   const ref = useRef<HTMLDivElement>(null);
   useScrollReveal(ref);
   const key = routeByPath(path)?.key;
-  // Pages are loaded before they are shown (see the navigation effect and main.tsx).
-  const Component = (key && loadedPage(key)) || NotFoundPage;
+  // Pages are loaded before they are shown (see the navigation effect and main.tsx); a known
+  // page that still isn't loaded failed to download.
+  const Component = !key ? NotFoundPage : (loadedPage(key) ?? PageLoadFailed);
   return (
     <div ref={ref}>
       <Component />
@@ -42,7 +70,12 @@ export function PageView() {
 
   // A new page was requested: fade the current one out while its code loads, then swap.
   useEffect(() => {
-    if (location.path === shown.path) return; // same page (only the #hash changed; the router scrolled)
+    if (location.path === shown.path) {
+      // Same page: only the #hash changed (the router scrolled), or the reader came back
+      // (e.g. Back) before the swap happened; then cancel the fade-out that had started.
+      setPhase((p) => (p === 'out' ? 'in' : p));
+      return;
+    }
     const key = routeByPath(location.path)?.key;
     let cancelled = false;
     const ready = key ? loadPage(key) : Promise.resolve();
@@ -61,7 +94,7 @@ export function PageView() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
+  }, [location, shown.path]);
 
   // Fetch the other pages in the background; on the homepage, only once the Cyber Core is up.
   useEffect(() => {

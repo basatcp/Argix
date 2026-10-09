@@ -29,7 +29,7 @@ export function TestimonialCard({ t }: { t: Testimonial }) {
         <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-ink-800 text-electric/60 transition-colors duration-300 group-hover:border-electric/40 group-hover:text-cyan">
           <QuoteMark />
         </span>
-        {t.projectType && <span className="text-right text-[11px] font-semibold uppercase tracking-[0.16em] text-muted/80">{t.projectType}</span>}
+        {t.projectType && <span className="text-right text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">{t.projectType}</span>}
       </div>
       <blockquote className="mt-6 flex-1">
         <p className="text-[16.5px] leading-relaxed text-[#D5DDE8] md:text-[17px]">{t.quote}</p>

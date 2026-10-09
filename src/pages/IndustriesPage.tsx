@@ -4,7 +4,7 @@ import { FinalCTA } from '../components/page/FinalCTA';
 import { PageHero } from '../components/page/PageHero';
 import { IndustriesHeroDiagram } from '../components/industries/IndustriesHeroDiagram';
 import { IndustrySection } from '../components/industries/IndustrySection';
-import { IndustryNav } from '../components/industries/IndustryNav';
+import { SubNav } from '../components/page/SubNav';
 
 /**
  * Bands alternate raised / base so the block before the closing CTA is raised.
@@ -40,7 +40,7 @@ export function IndustriesPage() {
       />
 
       <div className="relative">
-        <IndustryNav items={INDUSTRY_DETAILS} />
+        <SubNav label="Industries on this page" items={INDUSTRY_DETAILS.map((i) => ({ id: i.id, label: i.title, short: i.short }))} />
         {INDUSTRY_DETAILS.map((industry, i) => (
           <IndustrySection
             key={industry.id}

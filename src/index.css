@@ -311,7 +311,7 @@
 
 /* ---------- Mini Cyber Core (SVG) ---------- */
 .mini-core[data-active='false'] * {
-  animation-play-state: paused;
+  animation-play-state: paused !important; /* beats the animation shorthands below */
 }
 .mini-core .mc-stroke {
   stroke: rgba(110, 160, 220, 0.28);

@@ -126,21 +126,17 @@ export function Hex({ c, r, stroke = INK.line, dash, fill = 'none', className }:
   return <path d={hexagon(c[0], c[1], r)} stroke={stroke} strokeWidth={1} strokeDasharray={dash} fill={fill} className={className} />;
 }
 
-/** A line that draws in on first entry (`delay` in seconds). */
-export function DrawPath({ pts, d, stroke = INK.line, width = 1, delay = 0, dash }: { pts?: Pt[]; d?: string; stroke?: string; width?: number; delay?: number; dash?: string }) {
-  if (dash) return <path d={d ?? toD(pts!)} stroke={stroke} strokeWidth={width} strokeDasharray={dash} strokeLinecap="round" strokeLinejoin="round" className="d-reveal" style={{ ['--d' as string]: `${delay}s` } as CSSProperties} />;
-  return (
-    <path
-      d={d ?? toD(pts!)}
-      pathLength={1}
-      stroke={stroke}
-      strokeWidth={width}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="d-draw"
-      style={{ ['--d' as string]: `${delay}s` } as CSSProperties}
-    />
-  );
+/** A line that draws in on first entry (`delay` in seconds); dashed lines fade in instead. Pass either `pts` or `d`. */
+export function DrawPath(
+  props: ({ pts: Pt[]; d?: never } | { d: string; pts?: never }) & { stroke?: string; width?: number; delay?: number; dash?: string },
+) {
+  const { stroke = INK.line, width = 1, delay = 0, dash } = props;
+  const d = props.d ?? toD(props.pts);
+  const style = { ['--d' as string]: `${delay}s` } as CSSProperties;
+  if (dash) {
+    return <path d={d} stroke={stroke} strokeWidth={width} strokeDasharray={dash} strokeLinecap="round" strokeLinejoin="round" className="d-reveal" style={style} />;
+  }
+  return <path d={d} pathLength={1} stroke={stroke} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" className="d-draw" style={style} />;
 }
 
 /** Slowly rotating group (scanning arcs, orbit marks), compositor-only. */
@@ -185,4 +181,23 @@ export function arc(c: Pt, r: number, a0: number, a1: number) {
 export function polar(c: Pt, r: number, deg: number): Pt {
   const a = (deg * Math.PI) / 180;
   return [c[0] + Math.cos(a) * r, c[1] + Math.sin(a) * r];
+}
+
+/** Full circle as one path, for drawn-in or dashed rings (DrawPath). Starts at the left. */
+export function circlePath(c: Pt, r: number) {
+  return `M${c[0] - r} ${c[1]}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
+}
+
+/**
+ * Radial tick marks around a circle, as one path: `count` ticks evenly spaced
+ * from `start` degrees, each from radius r0 out to r1; every `majorEvery`-th
+ * tick is longer (starts at `majorR0`).
+ */
+export function tickRing(c: Pt, { count, r0, r1, majorEvery = 0, majorR0 = r0, start = 0 }: { count: number; r0: number; r1: number; majorEvery?: number; majorR0?: number; start?: number }) {
+  return Array.from({ length: count }, (_, i) => {
+    const a = start + (i * 360) / count;
+    const [x0, y0] = polar(c, majorEvery && i % majorEvery === 0 ? majorR0 : r0, a);
+    const [x1, y1] = polar(c, r1, a);
+    return `M${x0.toFixed(1)} ${y0.toFixed(1)}L${x1.toFixed(1)} ${y1.toFixed(1)}`;
+  }).join('');
 }

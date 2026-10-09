@@ -1,10 +1,10 @@
+import { pad2 } from '../../lib/format';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { FLOW_LOOP_NOTE, FLOW_STAGES } from '../../data/services';
 import { prefersReducedMotion } from '../../hooks/useReducedMotion';
 import { hexagon, toD, type Pt } from '../backgrounds/geometry';
 import { Icon } from '../Icons';
 import { Diagram, INK, Pulse } from '../page/Diagram';
-import { pad } from './format';
 
 /**
  * BUILD -> SECURE -> TEST -> DEPLOY -> MONITOR as one horizontal technical flow:
@@ -148,7 +148,7 @@ export function IntegratedFlow() {
               </span>
               <div className="pt-1 lg:pt-0">
                 <p className={`text-xs font-semibold tracking-[0.16em] transition-colors duration-700 ${on ? 'text-cyan' : 'text-muted'}`} style={delay(i)}>
-                  {pad(i + 1)}
+                  {pad2(i + 1)}
                 </p>
                 <h3 className="mt-1.5 text-[15px] font-semibold uppercase tracking-[0.16em] text-text">{s.label}</h3>
                 <p className="mt-2 text-[14.5px] leading-relaxed text-muted lg:mx-auto lg:max-w-[212px]">{s.text}</p>

@@ -1,5 +1,6 @@
+import { pad2 } from '../../lib/format';
 import type { Ref } from 'react';
-import { pad, type ProcessStage } from '../../data/process';
+import type { ProcessStage } from '../../data/process';
 import { Icon } from '../Icons';
 
 /**
@@ -33,8 +34,8 @@ export function StageIndex({
       <div className="relative px-3">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">{active < 0 ? 'First stage' : complete ? 'Final stage' : 'Current stage'}</p>
         <p className="mt-3 flex items-baseline gap-2">
-          <span className="text-[40px] font-semibold leading-none tracking-[-0.03em] text-text tabular-nums">{pad(shown + 1)}</span>
-          <span className="text-sm font-medium text-muted tabular-nums">/ {pad(stages.length)}</span>
+          <span className="text-[40px] font-semibold leading-none tracking-[-0.03em] text-text tabular-nums">{pad2(shown + 1)}</span>
+          <span className="text-sm font-medium text-muted tabular-nums">/ {pad2(stages.length)}</span>
         </p>
         <p className="mt-2.5 min-h-[2.75em] text-[16px] font-medium leading-snug text-[#D5DDE8]">{stages[shown].title}</p>
       </div>
@@ -72,7 +73,7 @@ export function StageIndex({
                     state === 'future' ? 'text-muted' : 'text-electric'
                   }`}
                 >
-                  {pad(i + 1)}
+                  {pad2(i + 1)}
                 </span>
                 <span className="min-w-0 flex-1">{s.title}</span>
                 {/* State marker in a fixed 16px box, so a title wraps the same way in every state */}
