@@ -32,8 +32,8 @@ npm run preview   # serve the production build
 | `/faq` | Grouped questions |
 
 - **Router:** `src/router.tsx` is a small built-in router (no dependency). Pages use plain links (`<a href="/security#vciso">`); one click handler turns same-origin links into in-app navigation with smooth in-page scrolling, back/forward scroll restoration, and title/meta updates. The route table (titles, descriptions) is `src/data/routes.ts`.
-- **Layout:** `src/components/layout/PageView.tsx` renders the current page plus the footer, with a short page transition (fade out 160 ms, then fade in with a 12 px rise over 340 ms; none with reduced motion). It also moves focus to the new page's heading. The header and the consultation popup are shared by every page.
-- **Shared page parts** (`src/components/page/`): `PageHero` (inner-page hero with breadcrumb and a page-specific diagram), `PageSection` (section rhythm and tones), `FinalCTA`, `ConsultButton` (opens the popup), `Breadcrumbs`, and `Diagram` (kit for the technical diagrams, built on the background system). `src/components/FAQAccordion.tsx` is shared by the homepage FAQ and the FAQ page.
+- **Layout:** `src/components/layout/PageView.tsx` renders the current page plus the footer, with a short page transition (fade out 100 ms, then fade in with a 12 px rise over 260 ms; none with reduced motion). It also moves focus to the new page's heading, and the homepage hero doesn't replay its entrance when you navigate back to it. The header and the consultation popup are shared by every page.
+- **Shared page parts** (`src/components/page/`): `PageHero` (inner-page hero with breadcrumb and a page-specific diagram), `PageSection` (section rhythm and tones), `SubNav` (sticky in-page navigation used by Industries and Security), `FinalCTA`, `ConsultButton` (opens the popup), `Breadcrumbs`, and `Diagram` (kit for the technical diagrams, built on the background system). `useActiveSection` (`src/hooks/`) tracks the section being read for `SubNav`, the FAQ category list and the Services group switcher. The homepage industry cards (`industries/IndustryCard.tsx`) link to their section on `/industries`. `src/components/FAQAccordion.tsx` is shared by the homepage FAQ and the FAQ page.
 - **Static hosting:** the build writes `dist/<route>/index.html` for every page, each with its own title, description, canonical URL and structured data (breadcrumbs; FAQPage on `/faq`). It also writes `404.html` (noindex; the app shows a not-found page), `sitemap.xml` and `robots.txt`. Any static host works without rewrite rules. Netlify, Vercel, Cloudflare Pages, GitHub Pages and S3 all serve `/services` from `services/index.html`, and nginx does with `try_files $uri $uri/ /index.html`. The domain comes from `SITE_URL` in `src/data/routes.ts`.
 
 ## Structure
@@ -49,14 +49,14 @@ src/
     MiniCore.tsx          Simplified SVG core (pillars, process, CTA)
     Hero.tsx, Header.tsx, Icons.tsx, Logo.tsx, ui.tsx, FAQAccordion.tsx
     layout/PageView.tsx   Routed page + footer, page transitions
-    page/                 PageHero, PageSection, FinalCTA, ConsultButton, Breadcrumbs, Diagram kit
+    page/                 PageHero, PageSection, SubNav, FinalCTA, ConsultButton, Breadcrumbs, Diagram kit
     sections/             Homepage sections: Offer, Trust, Process, Security, Closing
     testimonials/         Homepage testimonials
     services/, industries/, process/, security/, faq/   Inner-page components
     backgrounds/          Section background system (see below)
     consultation/         Popup, form, homepage section
   data/                   site.ts (homepage copy), routes.ts, one file per inner page, testimonials.ts
-  hooks/                  Reduced-motion + scroll reveal
+  hooks/                  Reduced motion, scroll reveal, active section
 public/
   cyber-core.webp/.png    Static render of the core (no-WebGL fallback)
   og-image.png            Open Graph image
@@ -141,6 +141,8 @@ Inner pages use the same primitives (`pageVariants.tsx`), all lighter than the h
 | Process timeline | `timeline` | Low (the timeline carries the motion) | low hex pattern, deep grid with parallax, drifting light, a few particles |
 | Closing call to action | `cta` | Medium | routes from both sides and below converge on the panel, nodes drifting inward, glow, inward particles |
 
+Each inner-page hero has its own light SVG diagram (no WebGL): Services shows build modules flowing into a hexagonal security boundary, Industries a honeycomb of sector cells around a secured core, Process the six stages on one delivery path with build and secure lanes and a monitoring ring, Security nested boundaries and rings around a defended core, and FAQ a calm nested-hexagon mark (desktop; smaller screens get the topic index instead). Hero diagrams are hidden on phones.
+
 Inner pages also reuse `network`, `monitor`, `split`, `industries`, `blueprint` and `minimal`. Their diagrams (`src/components/page/Diagram.tsx`) use the same strokes, nodes and pulses, draw in once, pause off-screen and are static with reduced motion.
 
 Primitives: `TechnicalGrid`, `HexGrid`, `CircuitLines`, `DataPulse`, `NetworkNodes`, `SecurityRings`, `RadialGlow`, `LightSweep`, `AmbientParticles`. Geometry is generated per section size from a seed (`geometry.ts`), so lines stay 1 px crisp and each section always looks the same.
@@ -186,3 +188,5 @@ The homepage "Client Perspective" section (`src/components/testimonials/`) reads
 - Set real `email`, `whatsappUrl`, `linkedinUrl`.
 - Replace `https://www.example.com` in `index.html` and `SITE_URL` in `src/data/routes.ts` (canonical, OG, JSON-LD, sitemap).
 - Link Privacy, Terms and Blog.
+- Confirm the standards listed per industry (`src/data/industries.ts`) and the stated platforms (e.g. Azure/AWS, REST/GraphQL) match what you deliver.
+- Align the consultation form's service options (`src/consultation/schema.ts`) with the services on `/services`.
