@@ -19,7 +19,7 @@ export function Faq() {
               Ask an engineer directly.
             </a>
           </p>
-          <a data-reveal href="/faq" className="group mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-electric">
+          <a data-reveal href="/faq" className="group mt-2 inline-flex min-h-[44px] items-center gap-1.5 text-sm font-medium text-electric">
             Browse all questions
             <Icon name="arrowRight" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
@@ -48,10 +48,11 @@ export function Footer() {
         {FOOTER_COLUMNS.map((col) => (
           <nav key={col.title} aria-label={col.title}>
             <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-text">{col.title}</h3>
-            <ul className="mt-5 space-y-3">
+            {/* 44px tall rows on touch screens; the compact list from 1024px. */}
+            <ul className="mt-3 lg:mt-5 lg:space-y-3">
               {col.links.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="text-[14.5px] text-muted transition-colors hover:text-text">
+                  <a href={l.href} className="inline-flex min-h-[44px] items-center text-[14.5px] text-muted transition-colors hover:text-text lg:min-h-0">
                     {l.label}
                   </a>
                 </li>

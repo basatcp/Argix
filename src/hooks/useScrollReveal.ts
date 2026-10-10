@@ -41,12 +41,12 @@ export function useScrollReveal(rootRef: RefObject<HTMLElement>) {
       fresh.forEach((el) => revealed.add(el));
       // Jumping down the page (an anchor link, /#contact) enters everything above at once.
       // Content already scrolled past appears instantly; only what is on screen animates,
-      // with the stagger capped so the last item never waits more than ~0.5 s.
+      // 80 ms apart; from the seventh item on they start together, so nothing waits more than ~0.5 s.
       const above = fresh.filter((el) => el.getBoundingClientRect().bottom < 0);
       const onScreen = fresh.filter((el) => !above.includes(el));
       if (above.length) gsap.set(above, { opacity: 1, y: 0, overwrite: true });
       if (onScreen.length) {
-        gsap.to(onScreen, { opacity: 1, y: 0, duration: 0.65, ease: EASE, stagger: Math.min(0.08, 0.5 / onScreen.length), overwrite: true });
+        gsap.to(onScreen, { opacity: 1, y: 0, duration: 0.65, ease: EASE, stagger: (i: number) => Math.min(i, 6) * 0.08, overwrite: true });
       }
     };
     /** Safety net after a re-measure: reveal anything at or above the reveal line that was missed. */
@@ -102,12 +102,21 @@ export function useScrollReveal(rootRef: RefObject<HTMLElement>) {
     ScrollTrigger.addEventListener('refresh', onRefreshed);
     const ro = new ResizeObserver(refresh);
     ro.observe(root);
+    // Keyboard focus can land on content below the reveal line (a focused element is scrolled
+    // only just into view): reveal whatever holds it, so focus is never on something invisible.
+    const onFocusIn = (e: FocusEvent) => {
+      const t = e.target as Node | null;
+      const hit = items.filter((el) => !revealed.has(el) && t && el.contains(t));
+      if (hit.length) reveal(hit);
+    };
+    root.addEventListener('focusin', onFocusIn);
 
     return () => {
       window.clearTimeout(timer);
       window.removeEventListener('scroll', onScroll);
       ScrollTrigger.removeEventListener('refresh', onRefreshed);
       ro.disconnect();
+      root.removeEventListener('focusin', onFocusIn);
       ctx.revert();
     };
   }, [rootRef]);

@@ -52,11 +52,6 @@ export function ServiceCard({ service, index, active = false }: { service: Build
           <p className="mt-3 max-w-[560px] text-[15px] leading-relaxed text-muted md:text-[15.5px]">{service.summary}</p>
         </div>
 
-        {/* the CTA follows the summary; on phones it follows the details */}
-        <div className="order-last -mt-1 md:order-none md:-mt-2 lg:col-start-2 lg:row-start-2 lg:mt-0 lg:pt-3">
-          <ConsultButton source={`services-${service.slug}`} label="Discuss this service" context={`(${service.title})`} variant="link" className="min-h-[44px]" />
-        </div>
-
         {/* phones: the lists open on demand */}
         <button
           type="button"
@@ -103,6 +98,11 @@ export function ServiceCard({ service, index, active = false }: { service: Build
               ))}
             </ul>
           </div>
+        </div>
+
+        {/* After the details in reading and tab order; beside the summary on desktop (grid placement). */}
+        <div className="-mt-1 lg:col-start-2 lg:row-start-2 lg:mt-0 lg:pt-3">
+          <ConsultButton source={`services-${service.slug}`} label="Discuss this service" context={`(${service.title})`} variant="link" className="min-h-[44px]" />
         </div>
       </div>
     </article>

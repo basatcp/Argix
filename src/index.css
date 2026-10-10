@@ -264,18 +264,18 @@
   }
 }
 
-/* ---------- Page transitions: fade out, then fade in with a short rise ---------- */
+/* ---------- Page transitions: fade out (100ms), then fade in with a short rise (260ms) ---------- */
 .page-view {
   transition:
-    opacity 340ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .page-view[data-phase='idle'] {
   transition: none;
 }
 .page-view[data-phase='out'] {
   opacity: 0;
-  transition: opacity 160ms ease-in;
+  transition: opacity 100ms ease-in;
 }
 .page-view[data-phase='enter'] {
   opacity: 0;

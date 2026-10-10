@@ -174,7 +174,7 @@ function ConsultationModal({ phase, onOpened, onClose }: { phase: Phase; onOpene
           type="button"
           aria-label="Close consultation form"
           onClick={() => onClose('button')}
-          className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-transparent text-muted transition-colors hover:border-line hover:text-text sm:right-5 sm:top-5"
+          className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-xl border border-transparent text-muted transition-colors hover:border-line hover:text-text sm:right-5 sm:top-5"
         >
           <Icon name="close" className="h-5 w-5" />
         </button>

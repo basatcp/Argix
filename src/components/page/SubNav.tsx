@@ -38,12 +38,12 @@ export function SubNav({ label, items }: { label: string; items: SubNavItem[] })
   }, [active]);
 
   return (
-    <nav aria-label={label} className="sticky top-[72px] z-30 border-b border-line bg-ink-950/85 backdrop-blur-md">
+    <nav aria-label={label} className="sticky top-[72px] z-30 border-b border-line bg-ink-950/95 backdrop-blur-md">
       <div className="container-site">
         <ol
           ref={scroller}
           style={{ ['--cols' as string]: items.length } as CSSProperties}
-          className="relative -mx-4 flex gap-2 overflow-x-auto px-4 py-2 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:mx-0 xl:grid xl:grid-cols-[repeat(var(--cols),minmax(max-content,1fr))] xl:gap-0 xl:overflow-visible xl:p-0 [&::-webkit-scrollbar]:hidden"
+          className="relative -mx-4 flex scroll-px-4 gap-2 overflow-x-auto px-4 py-2 sm:scroll-px-6 lg:scroll-px-8 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:mx-0 xl:grid xl:grid-cols-[repeat(var(--cols),minmax(max-content,1fr))] xl:gap-0 xl:overflow-visible xl:p-0 [&::-webkit-scrollbar]:hidden"
         >
           {items.map((item, i) => {
             const on = active === item.id;
@@ -53,6 +53,7 @@ export function SubNav({ label, items }: { label: string; items: SubNavItem[] })
                   href={`#${item.id}`}
                   data-target={item.id}
                   aria-current={on ? 'location' : undefined}
+                  onFocus={(e) => e.currentTarget.scrollIntoView({ block: 'nearest', inline: 'nearest' })}
                   onClick={(e) => {
                     // The router scrolls and moves focus; this only fixes the highlight during the scroll.
                     if (isPlainClick(e)) select(item.id);

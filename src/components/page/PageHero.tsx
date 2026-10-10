@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import gsap from 'gsap';
 import { prefersReducedMotion } from '../../hooks/useReducedMotion';
+import { hasNavigated } from '../../router';
 import { SectionBackground } from '../backgrounds/SectionBackground';
 import type { Variant } from '../backgrounds/variants';
 import { Icon } from '../Icons';
@@ -14,9 +15,9 @@ import { ConsultButton } from './ConsultButton';
  * instead of the Cyber Core, which stays the homepage's signature moment.
  *
  * The background `variant` (one of the `page-*` variants) routes its lines into
- * the diagram, which is marked data-bg-anchor="visual". Below 1024px the diagram
- * is hidden (stacked under the copy it only made the hero longer); the
- * background alone carries the hero there.
+ * the diagram, which is marked data-bg-anchor="visual". It sits beside the
+ * copy from 768px (smaller on tablets); on phones it is hidden and the
+ * background alone carries the hero.
  */
 export function PageHero({
   id,
@@ -41,7 +42,7 @@ export function PageHero({
   variant: Variant;
   primary?: { label: string; source: string } | null;
   secondary?: { label: string; href: string };
-  /** Decorative technical diagram (aria-hidden), shown beside the copy from 1024px up. */
+  /** Decorative technical diagram (aria-hidden), shown beside the copy from 768px up. */
   visual?: ReactNode;
   /** Instead of a diagram: real content for the right column (e.g. quick links). Shown on every screen size. */
   aside?: ReactNode;
@@ -50,9 +51,18 @@ export function PageHero({
   const ref = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    if (prefersReducedMotion()) return;
+    // First load only: after in-app navigation the page transition already brings the page in.
+    if (prefersReducedMotion() || hasNavigated()) return;
     const ctx = gsap.context(() => {
-      gsap.from('[data-hero]', { opacity: 0, y: 22, duration: 0.9, ease: 'power3.out', stagger: 0.09, delay: 0.05 });
+      // The shared reveal values: headings rise 24px, copy 14px, the rest 20px; 650ms, 80ms apart.
+      gsap.from('[data-hero]', {
+        opacity: 0,
+        y: (_: number, el: Element) => (el.tagName === 'H1' ? 24 : el.tagName === 'P' ? 14 : 20),
+        duration: 0.65,
+        ease: 'power4.out',
+        stagger: 0.08,
+        delay: 0.05,
+      });
     }, ref);
     return () => ctx.revert();
   }, []);
@@ -64,9 +74,15 @@ export function PageHero({
       <SectionBackground variant={variant} />
       <div aria-hidden="true" className="glow-divider absolute inset-x-0 bottom-0 opacity-70" />
 
+      {/* Copy starts at the same height on every page; the diagram is centred beside it. A diagram
+          sits beside the copy from 768px (smaller on tablets); an aside stacks until 1024px. */}
       <div
-        className={`container-site grid items-center gap-12 ${
-          visual || aside ? 'lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12 xl:gap-16' : ''
+        className={`container-site grid items-start gap-12 ${
+          visual
+            ? 'md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-8 lg:gap-12 xl:gap-16'
+            : aside
+              ? 'lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12 xl:gap-16'
+              : ''
         }`}
       >
         <div data-bg-anchor="copy" className="relative max-w-[660px]">
@@ -81,7 +97,9 @@ export function PageHero({
             id={id}
             data-hero
             tabIndex={-1}
-            className="mt-5 text-[38px] font-semibold leading-[1.06] tracking-[-0.032em] text-text sm:text-[46px] md:text-[52px] lg:text-[58px] xl:text-[62px]"
+            className={`mt-5 text-balance text-[38px] font-semibold leading-[1.06] tracking-[-0.032em] text-text sm:text-[46px] lg:text-[58px] xl:text-[62px] ${
+              visual ? 'md:text-[44px]' : 'md:text-[52px]'
+            }`}
           >
             {title}
           </h1>
@@ -89,7 +107,7 @@ export function PageHero({
             {lead}
           </p>
           {(primary || secondary) && (
-            <div data-hero className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div data-hero className={`mt-9 flex flex-col gap-3 sm:flex-row ${visual ? 'md:flex-col lg:flex-row' : ''}`}>
               {primary && <ConsultButton source={primary.source} label={primary.label} />}
               {secondary && (
                 <a href={secondary.href} className="btn-secondary">
@@ -107,12 +125,12 @@ export function PageHero({
         </div>
 
         {visual && (
-          <div data-hero data-bg-anchor="visual" aria-hidden="true" className="relative mx-auto hidden w-full max-w-[460px] lg:block">
+          <div data-hero data-bg-anchor="visual" aria-hidden="true" className="relative mx-auto hidden w-full max-w-[320px] self-center md:block lg:max-w-[460px]">
             {visual}
           </div>
         )}
         {aside && !visual && (
-          <div data-hero data-bg-anchor="visual" className="relative w-full">
+          <div data-hero data-bg-anchor="visual" className="relative w-full lg:self-center">
             {aside}
           </div>
         )}

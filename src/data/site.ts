@@ -1,4 +1,5 @@
 import type { IconName } from '../components/Icons';
+import type { IndustryCardData } from '../components/industries/IndustryCard';
 
 export const BRAND = {
   name: 'Corelayer',
@@ -120,12 +121,12 @@ export const STATS = [
 ];
 
 /** Homepage industry cards; `id` is the industry's section on the Industries page. */
-export const INDUSTRIES: { id: string; title: string; text: string; icon: IconName }[] = [
-  { id: 'healthcare', title: 'Healthcare', text: 'EHR systems, interoperability, healthcare AI and secure patient-facing platforms.', icon: 'heartPulse' },
-  { id: 'enterprise-saas', title: 'Enterprise & SaaS', text: 'Multi-tenant applications, enterprise systems, SSO and audit-ready architecture.', icon: 'building' },
-  { id: 'ecommerce-retail', title: 'E-Commerce & Retail', text: 'Secure, high-performance stores, payments and integrations.', icon: 'cart' },
-  { id: 'startups-mvps', title: 'Startups & MVPs', text: 'Secure first versions built quickly, with foundations that can scale.', icon: 'rocket' },
-  { id: 'fintech', title: 'Fintech', text: 'Payments, onboarding, financial platforms and regulated workflows.', icon: 'bank' },
+export const INDUSTRIES: IndustryCardData[] = [
+  { id: 'healthcare', title: 'Healthcare', text: 'EHR systems, interoperability, healthcare AI and secure patient-facing platforms.', icon: 'heartPulse', motif: 'healthcare' },
+  { id: 'enterprise-saas', title: 'Enterprise & SaaS', text: 'Multi-tenant applications, enterprise systems, SSO and audit-ready architecture.', icon: 'building', motif: 'saas' },
+  { id: 'ecommerce-retail', title: 'E-Commerce & Retail', text: 'Secure, high-performance stores, payments and integrations.', icon: 'cart', motif: 'commerce' },
+  { id: 'startups-mvps', title: 'Startups & MVPs', text: 'Secure first versions built quickly, with foundations that can scale.', icon: 'rocket', motif: 'startup' },
+  { id: 'fintech', title: 'Fintech', text: 'Payments, onboarding, financial platforms and regulated workflows.', icon: 'bank', motif: 'fintech' },
 ];
 
 /** Layers of the mini core, lit cumulatively by the process timeline. */

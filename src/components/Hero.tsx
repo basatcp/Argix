@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { prefersReducedMotion } from '../hooks/useReducedMotion';
+import { hasNavigated } from '../router';
 import { CyberCoreCanvas } from './CyberCoreCanvas';
 import { Icon } from './Icons';
 import { useConsultation } from './consultation/ConsultationModal';
@@ -11,7 +12,8 @@ export function Hero() {
   const { openConsultation } = useConsultation();
 
   useLayoutEffect(() => {
-    if (prefersReducedMotion()) return;
+    // Copy entrance on first load only; returning from another page, the page transition brings it in.
+    if (prefersReducedMotion() || hasNavigated()) return;
     const ctx = gsap.context(() => {
       gsap.from('[data-hero]', { opacity: 0, y: 22, duration: 0.9, ease: 'power3.out', stagger: 0.09, delay: 0.1 });
     }, ref);

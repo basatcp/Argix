@@ -12,10 +12,10 @@ import { SecurityIntro } from './SecurityIntro';
 export function VirtualCiso() {
   return (
     <PageSection id="vciso" labelledBy="vciso-title" background="minimal" className="scroll-mt-[134px] lg:scroll-mt-[60px]">
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 xl:gap-20">
+      <SecurityIntro id="vciso-title" eyebrow={VCISO.eyebrow} title={VCISO.title} lead={VCISO.lead} />
+      <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 xl:gap-20">
         <div className="lg:sticky lg:top-44 lg:self-start">
-          <SecurityIntro id="vciso-title" eyebrow={VCISO.eyebrow} title={VCISO.title} lead={VCISO.lead} />
-          <p data-reveal className="mt-8 flex max-w-[520px] gap-3 rounded-xl border border-line bg-ink-900/60 p-4 text-[14.5px] leading-relaxed text-[#C9D3E0]">
+          <p data-reveal className="flex max-w-[520px] gap-3 rounded-xl border border-line bg-ink-900/60 p-4 text-[14.5px] leading-relaxed text-[#C9D3E0]">
             <Icon name="userShield" className="mt-0.5 h-4 w-4 shrink-0 text-cyan" />
             {VCISO.fit}
           </p>
@@ -24,8 +24,7 @@ export function VirtualCiso() {
           </div>
         </div>
 
-        {/* lg:mt-2 puts the top rule on the eyebrow's line. */}
-        <ul className="border-t border-line lg:mt-2">
+        <ul className="border-t border-line">
           {VCISO.capabilities.map((c) => (
             <li key={c.title} data-reveal className="group relative border-b border-line">
               <span

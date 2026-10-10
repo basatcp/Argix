@@ -110,7 +110,7 @@ export function Certifications() {
               </svg>
               <span className="min-w-0">
                 <span className="block text-[16px] font-semibold tracking-[-0.005em] text-text md:text-[17px]">{c.code}</span>
-                <span className="block truncate text-[13px] text-muted">{c.area}</span>
+                <span className="block text-[13px] leading-snug text-muted">{c.area}</span>
               </span>
             </li>
           ))}

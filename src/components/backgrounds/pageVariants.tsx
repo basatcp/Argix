@@ -306,7 +306,11 @@ export function TestimonialsLayers() {
   const cards = first(anchors.cards);
   const y = cards ? cards.cy : h * 0.62;
   const traces = useMemo(() => routedTraces(w, h, { count: byTier(env.tier, { desktop: 7, tablet: 5, mobile: 3 }), seed: 81, hex: 30 }), [w, h, env.tier]);
-  const nodes: Node[] = traces.flatMap((t) => [{ p: t.pts[0], s: 0.8 }, { p: t.pts[t.pts.length - 1], s: 0.9 }]);
+  // Small moving nodes: each drifts a few px on a slow 14-22s cycle (static with reduced motion).
+  const nodes: Node[] = traces.flatMap((t, i) => [
+    { p: t.pts[0], s: 0.8, drift: [i % 2 ? 5 : -5, 3] as Pt },
+    { p: t.pts[t.pts.length - 1], s: 0.9, drift: [i % 2 ? -4 : 4, -4] as Pt },
+  ]);
   const line: Trace = { pts: [[-10, y], [w + 10, y]], d: toD([[-10, y], [w + 10, y]]) };
   return (
     <>

@@ -6,6 +6,7 @@ import { FinalCTA } from '../components/page/FinalCTA';
 import { PageHero } from '../components/page/PageHero';
 import { FaqCategoryNav } from '../components/faq/FaqCategoryNav';
 import { FaqGroupSection } from '../components/faq/FaqGroupSection';
+import { FaqHeroMark } from '../components/faq/FaqHeroMark';
 import { FaqTopicIndex } from '../components/faq/FaqTopicIndex';
 import { findQuestion } from '../components/faq/meta';
 
@@ -34,7 +35,17 @@ export function FaqPage() {
         lead="Answers to common questions about development, cybersecurity, compliance, project delivery, and ongoing support."
         variant="page-calm"
         primary={{ label: 'Book a Free Consultation', source: 'faq-hero' }}
-        aside={<FaqTopicIndex groups={FAQ_GROUPS} />}
+        aside={
+          <>
+            {/* The topic list where the category rail is hidden; on desktop the rail below does that job. */}
+            <div className="lg:hidden">
+              <FaqTopicIndex groups={FAQ_GROUPS} />
+            </div>
+            <div aria-hidden="true" className="mx-auto hidden max-w-[420px] lg:block">
+              <FaqHeroMark />
+            </div>
+          </>
+        }
       />
 
       {/* Custom markup instead of PageSection: each category is its own <section> with its own h2. */}

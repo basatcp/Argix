@@ -34,12 +34,16 @@ export function Header() {
 
   return (
     <header
+      onBlur={(e) => {
+        // Focus left the header (e.g. tabbing past the last menu item): close the menu over the page.
+        if (open && !e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         scrolled || open ? 'border-b border-line bg-ink-950/85 backdrop-blur-md' : 'border-b border-transparent'
       }`}
     >
       <div className="container-site flex h-[72px] items-center justify-between">
-        <a href="/" className="rounded-md" aria-label={`${BRAND.name} home`}>
+        <a href="/" className="flex h-11 items-center rounded-md" aria-label={`${BRAND.name} home`}>
           <Logo />
         </a>
 

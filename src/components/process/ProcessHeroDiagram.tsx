@@ -1,133 +1,119 @@
 import type { CSSProperties } from 'react';
-import { Diagram, DrawPath, Hex, INK, Pulse, RingPulse, Spin, arc, circlePath, polar, tickRing } from '../page/Diagram';
+import { Diagram, DrawPath, Hex, INK, Module, Pulse, RingPulse, Spin, arc } from '../page/Diagram';
 import { hexagon, toD, type Pt } from '../backgrounds/geometry';
 
 /**
- * Process hero visual: the six stages as nodes on a ring around a hexagonal
- * core. Arcs between the stages draw in on first view, then one pulse travels
- * the cycle and each stage node (with its spoke to the core) lights as the
- * pulse reaches it. Decorative; no text.
+ * Process hero visual: the six stages left to right on one delivery trace, the
+ * way the timeline below reads. A solid build lane runs above and a dashed
+ * secure lane below, and both tap into every stage. One pulse walks the trace
+ * and lights each stage as it arrives; the last stage sits inside a monitoring
+ * ring with a slow scan. Decorative; no text.
  */
 
 const W = 460;
-const C: Pt = [230, 230];
-const R_STAGE = 164; // ring the stages sit on (the pulse runs here)
-const R_TRACK = 146; // inner, dashed "secure" track
-const R_CORE = 64;
-const R_OUTER = 210;
-const STAGES = 6;
-const CYCLE = 15; // seconds for one lap of the pulse
-const TAIL = 90;
-
-const angle = (k: number) => -90 + k * (360 / STAGES);
-
-// The ring as a polyline from the top, clockwise (same direction and start as the stages).
-const RING: Pt[] = Array.from({ length: 121 }, (_, i) => polar(C, R_STAGE, -90 + i * 3));
-const RING_LEN = 2 * Math.PI * R_STAGE;
-const SPEED = (RING_LEN + TAIL) / CYCLE;
+const H = 330;
+const Y = 165; // delivery trace
+const Y_BUILD = 92;
+const Y_SECURE = 238;
+const XS = [42, 115, 188, 261, 334, 400];
+const CYCLE = 9; // seconds per run of the pulse
+const TAIL = 70;
+const TRACE: Pt[] = [
+  [0, Y],
+  [W, Y],
+];
+const SPEED = (W + TAIL) / CYCLE;
 
 /** Flash keyframes (`bg-blink`) peak at 89% of the cycle; shift each so the peak lands as the pulse arrives. */
-function flashStyle(k: number): CSSProperties {
-  const arrive = (k * RING_LEN) / STAGES / SPEED + 0.25;
-  const x = (((0.89 * CYCLE - arrive) % CYCLE) + CYCLE) % CYCLE;
-  return { animationDuration: `${CYCLE}s`, animationDelay: `${(-x).toFixed(2)}s` };
+function flashStyle(x: number): CSSProperties {
+  const arrive = x / SPEED + 0.15;
+  const shift = (((0.89 * CYCLE - arrive) % CYCLE) + CYCLE) % CYCLE;
+  return { animationDuration: `${CYCLE}s`, animationDelay: `${(-shift).toFixed(2)}s` };
 }
 
-// Six tick marks per stage segment on the outer ring, longer at the stages.
-const TICKS = tickRing(C, { count: 72, r0: R_OUTER - 4, r1: R_OUTER, majorEvery: 12, majorR0: R_OUTER - 10, start: -90 });
+const reveal = (d: number) => ({ ['--d' as string]: `${d}s` }) as CSSProperties;
 
 export function ProcessHeroDiagram() {
+  const mon: Pt = [XS[5], Y];
   return (
-    <Diagram w={W} h={W}>
+    <Diagram w={W} h={H}>
       {(animate) => (
         <>
-          {/* Soft glow behind the core */}
-          <circle cx={C[0]} cy={C[1]} r={120} fill="url(#ph-glow)" />
           <defs>
             <radialGradient id="ph-glow">
-              <stop offset="0%" stopColor="rgba(30,167,255,0.16)" />
+              <stop offset="0%" stopColor="rgba(30,167,255,0.14)" />
               <stop offset="100%" stopColor="rgba(30,167,255,0)" />
             </radialGradient>
           </defs>
+          <ellipse cx={W / 2} cy={Y} rx={230} ry={120} fill="url(#ph-glow)" />
 
-          {/* Outer technical ring with ticks, and a slow scanning arc */}
-          <g className="d-reveal" style={{ ['--d' as string]: '0.05s' } as CSSProperties}>
-            <circle cx={C[0]} cy={C[1]} r={R_OUTER} stroke={INK.faint} strokeWidth={1} />
-            <path d={TICKS} stroke={INK.faint} strokeWidth={1} />
-          </g>
-          {animate && (
-            <Spin c={C} period={48}>
-              <path d={arc(C, R_OUTER + 8, -120, -78)} stroke={INK.line} strokeWidth={1} strokeLinecap="round" />
-              <path d={arc(C, R_OUTER + 8, 60, 72)} stroke={INK.faint} strokeWidth={1} strokeLinecap="round" />
-            </Spin>
-          )}
-
-          {/* Secure track: dashed, just inside the stage ring */}
-          <DrawPath d={circlePath(C, R_TRACK)} stroke={INK.faint} dash="2 6" delay={0.5} />
-
-          {/* Stage ring: one arc per stage-to-stage segment, drawn in order */}
-          {Array.from({ length: STAGES }, (_, k) => (
-            <DrawPath key={k} d={arc(C, R_STAGE, angle(k) + 8, angle(k + 1) - 8)} stroke={INK.line} width={1.2} delay={0.25 + k * 0.16} />
-          ))}
-          {animate && <Pulse pts={RING} cycle={CYCLE} speed={SPEED} tail={TAIL} width={1.6} />}
-
-          {/* Spokes: every stage is wired to the core */}
-          {Array.from({ length: STAGES }, (_, k) => (
-            <DrawPath key={k} pts={[polar(C, R_CORE + 4, angle(k)), polar(C, R_STAGE - 20, angle(k))]} stroke={INK.faint} dash="2 5" delay={0.9 + k * 0.08} />
-          ))}
-          {animate &&
-            Array.from({ length: STAGES }, (_, k) => (
-              <path
-                key={k}
-                d={toD([polar(C, R_CORE + 4, angle(k)), polar(C, R_STAGE - 20, angle(k))])}
-                stroke={INK.strong}
-                strokeWidth={1}
-                className="bg-blink"
-                style={flashStyle(k)}
-              />
+          {/* Construction guides */}
+          <g className="d-reveal" style={reveal(0.05)} stroke={INK.faint} strokeWidth={1}>
+            <path d={`M0 ${Y_BUILD - 30}H${W}M0 ${Y_SECURE + 30}H${W}`} strokeDasharray="2 8" />
+            {XS.map((x) => (
+              <path key={x} d={`M${x} ${Y_BUILD - 44}V${Y_BUILD - 36}M${x} ${Y_SECURE + 36}V${Y_SECURE + 44}`} />
             ))}
+          </g>
 
-          {/* Core: nested hexagons, a slow counter-rotating ring, a centre node */}
-          <g className="d-reveal" style={{ ['--d' as string]: '0.2s' } as CSSProperties}>
-            <Hex c={C} r={R_CORE} fill={INK.fill} />
-            <Hex c={C} r={R_CORE - 13} stroke={INK.faint} dash="3 4" />
-            <path d={hexagon(C[0], C[1], 20)} stroke={INK.strong} strokeWidth={1} fill="rgba(56,189,248,0.1)" />
-            <circle cx={C[0]} cy={C[1]} r={3.5} fill={INK.node} />
+          {/* Build lane (solid) with taps down into each stage */}
+          <DrawPath pts={[[14, Y_BUILD], [XS[5] - 40, Y_BUILD]]} stroke={INK.line} delay={0.2} />
+          {XS.slice(0, 5).map((x, k) => (
+            <DrawPath key={x} pts={[[x, Y_BUILD], [x, Y - 22]]} stroke={INK.line} delay={0.45 + k * 0.1} />
+          ))}
+          <g className="d-reveal" style={reveal(0.3)}>
+            <Module p={[14, Y_BUILD]} s={0.9} lit />
+          </g>
+
+          {/* Secure lane (dashed) with taps up into each stage */}
+          <DrawPath pts={[[14, Y_SECURE], [XS[5] - 40, Y_SECURE]]} stroke={INK.line} dash="3 5" delay={0.3} />
+          {XS.slice(0, 5).map((x, k) => (
+            <DrawPath key={x} pts={[[x, Y_SECURE], [x, Y + 22]]} stroke={INK.line} dash="3 5" delay={0.55 + k * 0.1} />
+          ))}
+          <g className="d-reveal" style={reveal(0.4)}>
+            <path d={hexagon(14, Y_SECURE, 7)} stroke={INK.strong} strokeWidth={1} fill={INK.fill} />
+            <path d={`M10.6 ${Y_SECURE}l2.4 2.4 4.2-4.6`} stroke={INK.node} strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+          {/* Both lanes converge on the final stage */}
+          <DrawPath pts={[[XS[5] - 40, Y_BUILD], [mon[0] - 8, Y - 46]]} stroke={INK.line} delay={1} />
+          <DrawPath pts={[[XS[5] - 40, Y_SECURE], [mon[0] - 8, Y + 46]]} stroke={INK.line} dash="3 5" delay={1.05} />
+
+          {/* Delivery trace and the pulse that walks it */}
+          <DrawPath pts={TRACE} stroke={INK.line} width={1.2} delay={0.15} />
+          {animate && <Pulse pts={TRACE} cycle={CYCLE} speed={SPEED} tail={TAIL} width={1.6} />}
+
+          {/* Monitoring ring around the final stage */}
+          <g className="d-reveal" style={reveal(0.9)}>
+            <circle cx={mon[0]} cy={mon[1]} r={34} stroke={INK.line} strokeWidth={1} />
+            <circle cx={mon[0]} cy={mon[1]} r={47} stroke={INK.faint} strokeWidth={1} strokeDasharray="2 5" />
           </g>
           {animate && (
             <>
-              <Spin c={C} period={36} reverse>
-                <circle cx={C[0]} cy={C[1]} r={33} stroke={INK.line} strokeWidth={1} strokeDasharray="16 7" />
+              <Spin c={mon} period={14}>
+                <path d={arc(mon, 47, -90, -30)} stroke={INK.strong} strokeWidth={1.4} strokeLinecap="round" />
               </Spin>
-              <RingPulse c={C} r={R_CORE + 22} every={CYCLE / 2} />
+              <RingPulse c={mon} r={40} every={CYCLE} />
             </>
           )}
-          {!animate && <circle cx={C[0]} cy={C[1]} r={33} stroke={INK.line} strokeWidth={1} strokeDasharray="16 7" />}
 
-          {/* Stage nodes, each with a short outward lead */}
-          {Array.from({ length: STAGES }, (_, k) => {
-            const p = polar(C, R_STAGE, angle(k));
-            const lead0 = polar(C, R_STAGE + 17, angle(k));
-            const lead1 = polar(C, R_OUTER - 14, angle(k));
-            return (
-              <g key={k} className="d-reveal" style={{ ['--d' as string]: `${0.3 + k * 0.16}s` } as CSSProperties}>
-                <path d={toD([lead0, lead1])} stroke={INK.line} strokeWidth={1} />
-                <Hex c={p} r={15} fill={INK.fill} />
-                <circle cx={p[0]} cy={p[1]} r={3.2} fill={INK.node} opacity={0.75} />
-              </g>
-            );
-          })}
+          {/* Stage nodes */}
+          {XS.map((x, k) => (
+            <g key={x} className="d-reveal" style={reveal(0.35 + k * 0.14)}>
+              <Hex c={[x, Y]} r={15} fill={INK.fill} />
+              <circle cx={x} cy={Y} r={3.2} fill={INK.node} opacity={0.75} />
+            </g>
+          ))}
           {animate &&
-            Array.from({ length: STAGES }, (_, k) => {
-              const p = polar(C, R_STAGE, angle(k));
-              return (
-                <g key={k} className="bg-blink" style={flashStyle(k)}>
-                  <circle cx={p[0]} cy={p[1]} r={27} fill={INK.glow} />
-                  <path d={hexagon(p[0], p[1], 15)} stroke="rgba(57,215,255,0.95)" strokeWidth={1.3} />
-                  <circle cx={p[0]} cy={p[1]} r={3.6} fill="rgb(207,244,255)" />
-                </g>
-              );
-            })}
+            XS.map((x) => (
+              <g key={x} className="bg-blink" style={flashStyle(x)}>
+                <circle cx={x} cy={Y} r={26} fill={INK.glow} />
+                <path d={hexagon(x, Y, 15)} stroke="rgba(57,215,255,0.95)" strokeWidth={1.3} />
+                <circle cx={x} cy={Y} r={3.6} fill="rgb(207,244,255)" />
+              </g>
+            ))}
+          {animate &&
+            XS.slice(0, 5).map((x) => (
+              <path key={x} d={toD([[x, Y_BUILD + 4], [x, Y - 22]])} stroke={INK.strong} strokeWidth={1} className="bg-blink" style={flashStyle(x)} />
+            ))}
         </>
       )}
     </Diagram>

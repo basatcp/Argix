@@ -54,6 +54,10 @@ function fromWindow(key: number, restoreY?: number): Location {
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+let navigated = false;
+/** True once the reader has moved to another page in the app (not on the first page load). */
+export const hasNavigated = () => navigated;
+
 /** A plain primary click (no modifier keys): the kind the app handles itself instead of the browser. */
 export function isPlainClick(e: { button: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; altKey: boolean }) {
   return e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
@@ -111,6 +115,7 @@ export function RouterProvider({ children }: { children: ReactNode }) {
         setLocation((l) => ({ ...l, hash: next.hash }));
         return;
       }
+      navigated = true;
       setLocation(next);
     };
     window.addEventListener('popstate', onPop);
@@ -142,6 +147,7 @@ export function RouterProvider({ children }: { children: ReactNode }) {
     }
 
     if (MODE === 'history') window.history[replace ? 'replaceState' : 'pushState'](null, '', url);
+    navigated = true;
     setLocation({ path, hash: hash.length > 1 ? hash : '', key: current.key + 1 });
   }, []);
 

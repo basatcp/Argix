@@ -9,9 +9,9 @@ import { NotFoundPage } from '../../pages/NotFoundPage';
 import { whenCoreReady } from '../backgrounds/motion';
 import { Footer } from '../sections/Closing';
 
-/** Page transition: the old page fades out, the new one fades in with a short rise. */
-const OUT_MS = 160;
-const IN_MS = 340;
+/** Page transition (about 360ms in all): the old page fades out, the new one fades in with a short rise. */
+const OUT_MS = 100;
+const IN_MS = 260;
 
 /** A known page whose code couldn't be fetched (offline, or an old cached HTML after a deploy). */
 function PageLoadFailed() {
@@ -96,6 +96,22 @@ export function PageView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, shown.path]);
 
+  // Keep the focused element out from under the fixed header (e.g. when tabbing backwards,
+  // browsers scroll it to the very top). Anchor jumps already clear it through scroll margins.
+  useEffect(() => {
+    const onFocusIn = (e: FocusEvent) => {
+      const el = e.target;
+      if (!(el instanceof HTMLElement) || el.tabIndex < 0 || el.closest('header, nav.sticky, [role="dialog"]')) return;
+      if (!el.matches(':focus-visible')) return; // keyboard focus only, not mouse clicks
+      const sticky = document.querySelector<HTMLElement>('main nav.sticky');
+      const covered = 72 + (sticky && getComputedStyle(sticky).position === 'sticky' ? sticky.getBoundingClientRect().height : 0);
+      const top = el.getBoundingClientRect().top;
+      if (top < covered + 8) window.scrollBy({ top: top - covered - 16 });
+    };
+    document.addEventListener('focusin', onFocusIn);
+    return () => document.removeEventListener('focusin', onFocusIn);
+  }, []);
+
   // Fetch the other pages in the background; on the homepage, only once the Cyber Core is up.
   useEffect(() => {
     if (location.path === '/') return whenCoreReady(prefetchPages, 6000);
@@ -124,16 +140,15 @@ export function PageView() {
     }
   }, [shown.key]);
 
+  // The new page is mounted at its start state (transparent, 12px lower): flush that style,
+  // then start the fade-in right away, before the first paint.
+  useLayoutEffect(() => {
+    if (phase !== 'enter') return;
+    void mainRef.current?.offsetHeight;
+    setPhase('in');
+  }, [phase]);
+
   useEffect(() => {
-    if (phase === 'enter') {
-      // Paint the start state once, then transition in.
-      let inner = 0;
-      const outer = requestAnimationFrame(() => (inner = requestAnimationFrame(() => setPhase('in'))));
-      return () => {
-        cancelAnimationFrame(outer);
-        cancelAnimationFrame(inner);
-      };
-    }
     if (phase === 'in') {
       const t = window.setTimeout(() => {
         setPhase('idle');
