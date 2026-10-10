@@ -15,7 +15,9 @@ import { ConsultButton } from '../page/ConsultButton';
  */
 export function ServiceCard({ service, index, active = false }: { service: BuildService; index: number; active?: boolean }) {
   const { location } = useRouter();
-  const [open, setOpen] = useState(false);
+  // Open from the first render when the page is entered on this service, so the jump to it
+  // happens against the final layout (opening it afterwards would shift the scroll position).
+  const [open, setOpen] = useState(() => location.hash === `#${service.slug}`);
   const panelId = useId();
   const titleId = `${service.slug}-title`;
 

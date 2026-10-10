@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { FAQ_GROUPS } from '../data/faq';
-import { useRouter } from '../router';
+import { scrollToHash, useRouter } from '../router';
 import { SectionBackground } from '../components/backgrounds/SectionBackground';
 import { FinalCTA } from '../components/page/FinalCTA';
 import { PageHero } from '../components/page/PageHero';
@@ -20,6 +20,12 @@ export function FaqPage() {
     const q = findQuestion(FAQ_GROUPS, location.hash);
     if (q) setDeep(q);
   }, [location.hash]);
+  // Opening a question in place can close another one above it, after the router has already
+  // started scrolling; aim the scroll again at the question's final position.
+  useLayoutEffect(() => {
+    if (deep && deep !== landing) scrollToHash(`#${deep.id}`, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deep]);
 
   return (
     <>
