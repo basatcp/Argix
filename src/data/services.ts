@@ -2,7 +2,10 @@ import type { IconName } from '../components/Icons';
 
 /**
  * Services page content. Each `slug` is the element id of the service on
- * /services (shared anchor ids: other pages and the footer link to them).
+ * /services. Build & Run slugs are shared anchors (the homepage cards, the
+ * Industries page and the footer link to /services#<slug>); links to a security
+ * service elsewhere go to the Cybersecurity page instead (/security#<id>, see
+ * `detailsHref`).
  */
 
 export interface BuildService {

@@ -23,7 +23,7 @@ export function SecurityPage() {
     <>
       <PageHero
         id="security-title"
-        crumb="Security"
+        crumb="Cybersecurity"
         eyebrow={SECURITY_HERO.eyebrow}
         title={SECURITY_HERO.title}
         lead={SECURITY_HERO.lead}

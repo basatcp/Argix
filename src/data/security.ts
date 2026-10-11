@@ -1,8 +1,9 @@
 import type { IconName } from '../components/Icons';
 
 /**
- * Content for the Security page (/security). Section ids are shared anchors:
- * other pages, the footer and the homepage link to /security#<id>.
+ * Content for the Cybersecurity page (/security). Section ids are shared anchors:
+ * the homepage service cards, the Services and Industries pages and the footer
+ * link to /security#<id>.
  *
  * Copy rules: readiness and support, never certification; no SLAs, response
  * times, counts or client claims.

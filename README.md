@@ -1,6 +1,6 @@
 # Corelayer: Secure Software, AI & Cybersecurity Website
 
-A responsive B2B marketing site for a company that builds software, AI and cloud systems and secures them: a homepage plus Services, Industries, Process, Security and FAQ pages. The visual identity centres on the **3D Hexagonal Cyber Core**, a real-time WebGL object that opens in stages in the homepage hero and returns as a simplified SVG core in later sections.
+A responsive B2B marketing site for a company that builds software, AI and cloud systems and secures them: a homepage plus Cybersecurity (`/security`), Services, Industries, Process and FAQ pages. The visual identity centres on the **3D Hexagonal Cyber Core**, a real-time WebGL object that opens in stages in the homepage hero and returns as a simplified SVG core in later sections.
 
 > "Corelayer" is a placeholder brand name. Rename it in `src/data/site.ts`, `index.html` and `public/favicon.svg`.
 
@@ -28,10 +28,10 @@ npm run preview   # serve the production build
 | `/services` | Build & Run and Secure & Comply services, integrated approach |
 | `/industries` | Healthcare, Enterprise & SaaS, E-Commerce & Retail, Startups & MVPs, Fintech |
 | `/process` | Six-stage process with a scroll-driven timeline |
-| `/security` | Penetration testing, GRC & compliance readiness, vCISO, SOC monitoring, incident response, secure development |
+| `/security` | Cybersecurity (first in the menu): penetration testing, GRC & compliance readiness, vCISO, SOC monitoring, incident response, secure development |
 | `/faq` | Grouped questions |
 
-- **Router:** `src/router.tsx` is a small built-in router (no dependency). Pages use plain links (`<a href="/security#vciso">`); one click handler turns same-origin links into in-app navigation with smooth in-page scrolling, back/forward scroll restoration, and title/meta updates. The route table (titles, descriptions) is `src/data/routes.ts`.
+- **Router:** `src/router.tsx` is a small built-in router (no dependency). Pages use plain links (`<a href="/security#vciso">`); one click handler turns same-origin links into in-app navigation with smooth in-page scrolling, back/forward scroll restoration, and title/meta updates. The route table (titles, descriptions, breadcrumb labels) is `src/data/routes.ts`; the header menu is `NAV` in `src/data/site.ts`. Cybersecurity is the main line of business, so it leads the menu, and links to a specific security service (homepage cards, footer, Industries, the Services page) go to its section on `/security`.
 - **Layout:** `src/components/layout/PageView.tsx` renders the current page plus the footer, with a short page transition (fade out 100 ms, then fade in with a 12 px rise over 260 ms; none with reduced motion). It also moves focus to the new page's heading, and the homepage hero doesn't replay its entrance when you navigate back to it. The header and the consultation popup are shared by every page.
 - **Shared page parts** (`src/components/page/`): `PageHero` (inner-page hero with breadcrumb and a page-specific diagram), `PageSection` (section rhythm and tones), `SubNav` (sticky in-page navigation used by Industries and Security), `FinalCTA`, `ConsultButton` (opens the popup), `Breadcrumbs`, and `Diagram` (kit for the technical diagrams, built on the background system). `useActiveSection` (`src/hooks/`) tracks the section being read for `SubNav`, the FAQ category list and the Services group switcher. The homepage industry cards (`industries/IndustryCard.tsx`) link to their section on `/industries`. `src/components/FAQAccordion.tsx` is shared by the homepage FAQ and the FAQ page.
 - **Static hosting:** the build writes `dist/<route>/index.html` for every page, each with its own title, description, canonical URL and structured data (breadcrumbs; FAQPage on `/faq`). It also writes `404.html` (noindex; the app shows a not-found page), `sitemap.xml` and `robots.txt`. Any static host works without rewrite rules. Netlify, Vercel, Cloudflare Pages, GitHub Pages and S3 all serve `/services` from `services/index.html`, and nginx does with `try_files $uri $uri/ /index.html`. The domain comes from `SITE_URL` in `src/data/routes.ts`.

@@ -10,11 +10,12 @@ export const BRAND = {
   linkedinUrl: 'https://www.linkedin.com/company/example',
 };
 
+/** Cybersecurity is the main line of business, so it leads the menu. */
 export const NAV = [
+  { label: 'Cybersecurity', href: '/security' },
   { label: 'Services', href: '/services' },
   { label: 'Industries', href: '/industries' },
   { label: 'Process', href: '/process' },
-  { label: 'Security', href: '/security' },
   { label: 'FAQ', href: '/faq' },
 ];
 
@@ -52,7 +53,11 @@ export const PILLARS: Pillar[] = [
   },
 ];
 
-/** Homepage service cards; `slug` is the service's anchor on the Services page. */
+/**
+ * Homepage service cards. `slug` is the anchor id: Secure cards link to their
+ * section on the Cybersecurity page (/security#<slug>), Build and Run cards to
+ * /services#<slug>.
+ */
 export const SERVICES: { title: string; text: string; icon: IconName; group: 'Build' | 'Run' | 'Secure'; slug: string }[] = [
   {
     title: 'Custom Software Development',

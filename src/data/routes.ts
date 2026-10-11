@@ -31,6 +31,14 @@ export const ROUTES: RouteMeta[] = [
     description: 'Secure software development, AI, cloud, penetration testing, compliance and cybersecurity services for growing companies.',
   },
   {
+    key: 'security',
+    path: '/security',
+    label: 'Cybersecurity',
+    title: 'Cybersecurity, Penetration Testing & Compliance Readiness | Corelayer',
+    description:
+      'Cybersecurity, penetration testing, compliance, monitoring, and security leadership designed to reduce risk across your technology environment.',
+  },
+  {
     key: 'services',
     path: '/services',
     label: 'Services',
@@ -53,14 +61,6 @@ export const ROUTES: RouteMeta[] = [
     title: 'Our Process: Security at Every Stage of Development | Corelayer',
     description:
       'From discovery through launch and monitoring, security is integrated into the way we design, build, test, and operate technology.',
-  },
-  {
-    key: 'security',
-    path: '/security',
-    label: 'Security',
-    title: 'Cybersecurity, Penetration Testing & Compliance Readiness | Corelayer',
-    description:
-      'Cybersecurity, penetration testing, compliance, monitoring, and security leadership designed to reduce risk across your technology environment.',
   },
   {
     key: 'faq',
